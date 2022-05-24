@@ -27,5 +27,4 @@ class TodoItem(Base, TableModel):
         ForeignKey("todo_list.id_todo_list", name="todo_item_todo_list_fk"),
         nullable=False,
     )
-    blabla = Column(String(50), nullable=False)
     todo_list = relationship("TodoList", foreign_keys=id_todo_list)
