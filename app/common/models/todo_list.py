@@ -1,14 +1,15 @@
 from sqlalchemy import Column, String, text
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.sql.sqltypes import DateTime
 
 from app.common.models.table_model import TableModel
 from app.db.database import Base
 
 
-class Todo(Base, TableModel):
-    __tablename__ = "todo"
+class TodoList(Base, TableModel):
+    __tablename__ = "todo_list"
 
-    id_todo = Column(
+    id_todo_list = Column(
         UUID(as_uuid=True),
         unique=True,
         primary_key=True,
@@ -17,4 +18,6 @@ class Todo(Base, TableModel):
         ),
         nullable=False,
     )
-    description = Column(String(50), nullable=False)
+
+    nome = Column(String(50), nullable=False)
+    prazo = Column(DateTime, nullable=False)
