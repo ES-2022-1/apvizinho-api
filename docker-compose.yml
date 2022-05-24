@@ -7,6 +7,7 @@ services:
     volumes:
       - ./app:/opt/service/app
       - ./migrations:/opt/service/migrations
+      - ./tests:/opt/service/tests
     command: bash -c "/opt/service/scripts/pre-start.sh && uvicorn app.main:app --host 0.0.0.0 --reload"
     env_file:
       - .env
