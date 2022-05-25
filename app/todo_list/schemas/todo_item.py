@@ -15,6 +15,7 @@ class TodoItemCreate(TodoItemBase):
 
 class TodoItemView(TodoItemBase):
     id_todo_item: UUID
+    id_todo_list: UUID
 
     class Config:
         orm_mode = True
