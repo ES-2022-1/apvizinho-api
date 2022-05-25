@@ -2,6 +2,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.db.database import SessionLocal
+from app.todo_list.services.todo_item_service import TodoItemService
 from app.todo_list.services.todo_list_service import TodoListService
 
 
@@ -21,3 +22,7 @@ def get_db():
 
 def get_todo_list_service(db: Session = Depends(get_db)):
     return TodoListService(db)
+
+
+def get_todo_item_service(db: Session = Depends(get_db)):
+    return TodoItemService(db)

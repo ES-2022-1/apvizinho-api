@@ -1,6 +1,5 @@
 from sqlalchemy import Column, String, text
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 
 from app.common.models.table_model import TableModel
@@ -27,4 +26,3 @@ class TodoItem(Base, TableModel):
         ForeignKey("todo_list.id_todo_list", name="todo_item_todo_list_fk"),
         nullable=False,
     )
-    todo_list = relationship("TodoList", foreign_keys=id_todo_list)

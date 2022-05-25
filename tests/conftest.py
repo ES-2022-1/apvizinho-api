@@ -11,6 +11,7 @@ from sqlalchemy_utils import create_database, database_exists
 
 from app.api.deps import get_db
 from app.main import app
+from tests.factories import make_todo_item, make_todo_list  # noqa: F401
 
 database_url = "postgresql://postgres:postgres@db:5432/postgres_test"
 engine = create_engine(database_url)
