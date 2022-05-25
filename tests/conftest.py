@@ -10,18 +10,16 @@ from sqlalchemy.orm.session import Session
 from sqlalchemy_utils import create_database, database_exists
 
 from app.api.deps import get_db
+from app.core.settings import SQLALCHEMY_DATABASE_URL
 from app.main import app
 from tests.factories import make_todo_item, make_todo_list  # noqa: F401
 
-database_url = "postgresql://postgres:postgres@db:5432/postgres_test"
-engine = create_engine(database_url)
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 
 @pytest.fixture()
 def session():
     if not engine.url.database.endswith("_test"):
-        print(database_url)
-
         raise Exception("Dear lord! for your safety only db name ending `_test` is allowed.")
 
     if not database_exists(engine.url):
@@ -33,7 +31,7 @@ def session():
     config = Config(file_=alembic_ini)
 
     config.set_main_option("script_location", script_location)
-    config.set_main_option("sqlalchemy.url", database_url)
+    config.set_main_option("sqlalchemy.url", SQLALCHEMY_DATABASE_URL)
 
     # drop everything
     # command.downgrade(config, "base")
