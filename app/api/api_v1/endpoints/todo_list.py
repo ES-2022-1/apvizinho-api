@@ -27,7 +27,10 @@ def get_all_todo_list(service: TodoListService = Depends(deps.get_todo_list_serv
 def get_todo_list_by_id(
     id_todo_list: UUID, service: TodoListService = Depends(deps.get_todo_list_service)
 ):
-    return service.get_by_id(id_todo_list=id_todo_list)
+    try:
+        return service.get_by_id(id_todo_list=id_todo_list)
+    except RecordNotFoundException:
+        raise RecordNotFoundHTTPException(detail="Todo List not found")
 
 
 @router.delete("/{id_todo_list}")

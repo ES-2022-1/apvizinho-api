@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, text
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import DateTime
 
 from app.common.models.table_model import TableModel
@@ -21,3 +22,10 @@ class TodoList(Base, TableModel):
 
     nome = Column(String(50), nullable=False)
     prazo = Column(DateTime, nullable=False)
+
+    items = relationship(
+        "TodoItem",
+        primaryjoin="and_(TodoList.id_todo_list==TodoItem.id_todo_list, "
+        "TodoItem.deleted_at.is_(None))",
+        backref="todo_list",
+    )
