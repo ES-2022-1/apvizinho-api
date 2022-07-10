@@ -5,6 +5,7 @@ from app.db.database import SessionLocal
 from app.local.services.local_service import LocalService
 from app.local.services.address_service import AddressService
 from app.local.services.room_service import RoomService
+from app.user.services.user_service import UserService
 
 
 def get_db():
@@ -29,3 +30,5 @@ def get_address_service(db: Session = Depends(get_db)):
 
 def get_room_service(db: Session = Depends(get_db)):
     return RoomService(db)
+def get_user_service(db: Session = Depends(get_db)):
+    return UserService(db)

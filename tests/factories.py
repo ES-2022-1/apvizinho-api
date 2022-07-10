@@ -1,28 +1,24 @@
 import uuid
-from datetime import datetime
 
 import pytest
+from pendulum import date
 
 from app.common import models
 
 
 @pytest.fixture
-def make_todo_list():
-    defaults = dict(nome="Lista de Compra", prazo=datetime.now())
-
-    def _make_todo_list(**overrides):
-        return models.TodoList(id_todo_list=uuid.uuid4(), **{**defaults, **overrides})
-
-    return _make_todo_list
-
-
-@pytest.fixture
-def make_todo_item(make_todo_list):
+def make_user():
     defaults = dict(
-        nome="Item 1", description="Item numero 1 da lista de compras", todo_list=make_todo_list()
+        email="email@email.com",
+        firstname="Nome",
+        surname="Sobrenome",
+        password_hash="hash",
+        cellphone="99999999999",
+        document="12345678900",
+        birthdate=date(year=2022, month=4, day=3),
     )
 
-    def _make_todo_item(**overrides):
-        return models.TodoItem(id_todo_item=uuid.uuid4(), **{**defaults, **overrides})
+    def _make_user(**overrides):
+        return models.User(id_user=uuid.uuid4(), **{**defaults, **overrides})
 
-    return _make_todo_item
+    return _make_user
