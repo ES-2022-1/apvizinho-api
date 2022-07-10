@@ -67,3 +67,11 @@ def test_delete_user(user, session, user_client):
     response = user_client.get_by_id(id=user.id_user)
     assert response.status_code == 404
     assert response.json()["detail"] == "User not found"
+
+
+def test_get_user_by_id(user, session, user_client):
+    session.add(user)
+    session.commit()
+    response = user_client.get_by_id(id=user.id_user)
+    assert response.status_code == 200
+    assert response.json()["id_user"] == str(user.id_user)
