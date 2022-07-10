@@ -8,14 +8,17 @@ class UserBase(BaseModel):
     firstname: str
     surname: str
     email: str
-    password: str
     cellphone: str
     document: str
     birthdate: date
 
 
 class UserCreate(UserBase):
-    ...
+    password: str
+
+
+class UserCreateHashedPassword(UserBase):
+    password_hash: str
 
 
 class UserView(BaseModel):
