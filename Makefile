@@ -31,6 +31,13 @@ test-cov:
 docker-alembic-revision:
 	docker compose run server alembic revision --autogenerate -m $(m)
 
+docker-alembic-upgrade:
+	docker compose run --rm server alembic upgrade head
+
+docker-alembic-downgrade:
+	docker compose run --rm server alembic downgrade base
+
+
 lint:
 	poetry run pre-commit run --all-files
 
