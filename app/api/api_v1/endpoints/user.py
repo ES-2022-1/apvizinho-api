@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends
 import app.api.deps as deps
 from app.common.exceptions import RecordNotFoundException, RecordNotFoundHTTPException
 from app.user.schemas import UserCreate, UserView
+from app.user.schemas.user import UserUpdate
 from app.user.services.user_service import UserService
 
 router = APIRouter()
@@ -27,3 +28,20 @@ def get_users_by_id(id_user: UUID, service: UserService = Depends(deps.get_user_
         return service.get_by_id(id_user=id_user)
     except RecordNotFoundException:
         raise RecordNotFoundHTTPException(detail="User not found")
+
+
+@router.delete("/{id_user}")
+def delete_user(id_user: UUID, service: UserService = Depends(deps.get_user_service)):
+    try:
+        service.delete(id_user=id_user)
+    except RecordNotFoundException:
+        raise RecordNotFoundHTTPException(detail="User not found")
+
+
+@router.put("/{id_user}", response_model=UserView)
+def update_user(
+    user_update: UserUpdate,
+    id_user: UUID,
+    service: UserService = Depends(deps.get_user_service),
+):
+    return service.update(update=user_update, id_user=id_user)
