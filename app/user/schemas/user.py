@@ -29,6 +29,7 @@ class UserView(BaseModel):
     email: str
     cellphone: str
     birthdate: date
+    document: str
 
     class Config:
         orm_mode = True
@@ -40,3 +41,4 @@ class UserUpdate(BaseModel):
     email: Optional[str]
     cellphone: Optional[str]
     birthdate: Optional[date]
+    document: Optional[str]

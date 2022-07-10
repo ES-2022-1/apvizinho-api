@@ -35,3 +35,25 @@ def test_create_user(user_client):
 
     assert response.status_code == 200
     assert response.json()["firstname"] == "Nome"
+
+
+@pytest.mark.parametrize(
+    "field,expected_field",
+    [
+        ("firstname", "Novo Nome"),
+        ("surname", "Novo Sobrenome"),
+        ("email", "novoemail@email.com.br"),
+        ("cellphone", "88888888888"),
+        ("document", "88888888888"),
+        ("birthdate", "2022-08-10"),
+    ],
+)
+def test_update_user(user, session, user_client, field, expected_field):
+    session.add(user)
+    session.commit()
+
+    data = {field: expected_field}
+
+    response = user_client.update(id=user.id_user, update=json.dumps(data))
+    assert response.status_code == 200
+    assert response.json()[field] == expected_field
