@@ -6,10 +6,10 @@ import app.common.models as models
 from app.common.repositories.base import BaseRepository
 
 
-class TodoItemRepository(BaseRepository[models.TodoItem, UUID]):
+class AddressRepository(BaseRepository[models.Address, UUID]):
     def __init__(self, db: Session):
-        super(TodoItemRepository, self).__init__(
-            models.TodoItem.id_todo_item,
-            model_class=models.TodoItem,
+        super(AddressRepository, self).__init__(
+            models.Address.id_address,
+            model_class=models.Address,
             db=db,
         )
