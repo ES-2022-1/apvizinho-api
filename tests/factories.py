@@ -22,3 +22,25 @@ def make_user():
         return models.User(id_user=uuid.uuid4(), **{**defaults, **overrides})
 
     return _make_user
+
+
+@pytest.fixture
+def make_local():
+    defaults = dict(
+        title = "casa bonita",
+        description = "casa",
+        is_close_to_university = True,
+        is_close_to_supermarket = True,
+        has_furniture = True,
+        has_internet = True,
+        allow_pet = True,
+        allow_events = True,
+        has_piped_gas =  True,
+        type =  "casa",
+        status = "disponivel"
+    )
+
+    def _make_local(**overrides):
+        return models.Local(id_local=uuid.uuid4(), **{**defaults, **overrides})
+
+    return _make_local

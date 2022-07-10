@@ -15,7 +15,7 @@ class LocalBase(BaseModel):
     has_furniture: bool
     has_internet: bool
     allow_pet: bool
-    iallow_events: bool
+    allow_events: bool
     has_piped_gas: bool
     type: str
     status: str
@@ -42,7 +42,7 @@ class LocalUpdate(BaseModel):
     has_furniture: Optional[bool]
     has_internet: Optional[bool]
     allow_pet: Optional[bool]
-    iallow_events: Optional[bool]
+    allow_events: Optional[bool]
     has_piped_gas: Optional[bool]
     type: Optional[bool]
     status: Optional[bool]
