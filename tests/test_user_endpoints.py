@@ -75,3 +75,12 @@ def test_get_user_by_id(user, session, user_client):
     response = user_client.get_by_id(id=user.id_user)
     assert response.status_code == 200
     assert response.json()["id_user"] == str(user.id_user)
+
+
+def test_list_users(user, session, user_client):
+    session.add(user)
+    session.commit()
+    response = user_client.get_all()
+
+    assert response.status_code == 200
+    assert len(response.json()) == 1
