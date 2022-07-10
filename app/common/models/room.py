@@ -30,6 +30,6 @@ class Room(Base, TableModel):
     is_shared_room = Column(Boolean, nullable=False)
     allowed_smoker = Column(Boolean, nullable=False)
     required_organized_person = Column(Boolean, nullable=False)
-    required_ectroverted_person = Column(Boolean, nullable=False)
+    required_extroverted_person = Column(Boolean, nullable=False)
     gender = Column(String(50), nullable=True)
     price = Column(Numeric, nullable=False)

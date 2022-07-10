@@ -19,7 +19,7 @@ class RoomBase(BaseModel):
     is_shared_room: bool
     allowed_smoker: bool
     required_organized_person: bool
-    required_ectroverted_person: bool
+    required_extroverted_person: bool
     gender: GenderEnum
     price: float
 
@@ -44,6 +44,6 @@ class RoomUpdate(BaseModel):
     is_shared_room: Optional[bool]
     allowed_smoker: Optional[bool]
     required_organized_person: Optional[bool]
-    required_ectroverted_person: Optional[bool]
+    required_extroverted_person: Optional[bool]
     gender: Optional[str]
     price: Optional[float]

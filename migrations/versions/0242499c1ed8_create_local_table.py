@@ -86,7 +86,7 @@ def upgrade():
         sa.Column("is_shared_room", sa.Boolean(), nullable=False),
         sa.Column("allowed_smoker", sa.Boolean(), nullable=False),
         sa.Column("required_organized_person", sa.Boolean(), nullable=False),
-        sa.Column("required_ectroverted_person", sa.Boolean(), nullable=False),
+        sa.Column("required_extroverted_person", sa.Boolean(), nullable=False),
         sa.Column("gender", sa.String(length=50), nullable=True),
         sa.Column("price", sa.Numeric(), nullable=False),
         sa.ForeignKeyConstraint(["id_local"], ["Local.id_local"], name="room_local_fk"),

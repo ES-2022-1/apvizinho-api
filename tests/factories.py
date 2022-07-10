@@ -53,7 +53,7 @@ def make_local():
                 is_shared_room=False,
                 allowed_smoker=False,
                 required_organized_person=True,
-                required_ectroverted_person=False,
+                required_extroverted_person=False,
                 gender='FEMALE',
                 price=500
             )
