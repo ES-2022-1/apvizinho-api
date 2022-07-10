@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import List, Optional
 from uuid import UUID
 
@@ -5,6 +6,11 @@ from pydantic import BaseModel
 
 from app.local.schemas.address import AddressCreate, AddressView
 from app.local.schemas.room import RoomBase, RoomView
+
+
+class StatusEnum(str, Enum):
+    ACTIVE = "ACTIVE"
+    DISABLED = "DISABLED"
 
 
 class LocalBase(BaseModel):
@@ -17,7 +23,7 @@ class LocalBase(BaseModel):
     allow_pet: bool
     allow_events: bool
     has_piped_gas: bool
-    type: str
+    type: StatusEnum = StatusEnum.ACTIVE
     status: str
 
 

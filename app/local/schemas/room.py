@@ -1,7 +1,14 @@
+from enum import Enum
 from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel
+
+
+class GenderEnum(str, Enum):
+    FEMALE = "FEMALE"
+    MALE = "MALE"
+    UNKNOWN = "UNKNOWN"
 
 
 class RoomBase(BaseModel):
@@ -13,7 +20,7 @@ class RoomBase(BaseModel):
     allowed_smoker: bool
     required_organized_person: bool
     required_ectroverted_person: bool
-    gender: str
+    gender: GenderEnum
     price: float
 
 
