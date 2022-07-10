@@ -31,7 +31,7 @@ def upgrade():
         sa.Column("email", sa.String(length=50), nullable=False),
         sa.Column("firstname", sa.String(length=50), nullable=False),
         sa.Column("surname", sa.String(length=50), nullable=False),
-        sa.Column("password_hash", sa.String(length=50), nullable=False),
+        sa.Column("password_hash", sa.String(length=100), nullable=False),
         sa.Column("cellphone", sa.String(length=13), nullable=False),
         sa.Column("document", sa.String(length=11), nullable=False),
         sa.Column("birthdate", sa.Date(), nullable=False),
