@@ -8,3 +8,5 @@ SQLALCHEMY_DATABASE_URL = config(
     "SQLALCHEMY_DATABASE_URL",
     default="postgresql://postgres:@localhost:5432/postgres_test",
 )
+
+PASSWORD_HASH_SECRET = config("PASSWORD_HASH_SECRET")

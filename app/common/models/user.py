@@ -19,6 +19,8 @@ class User(Base, TableModel):
     )
 
     email = Column(String(50), nullable=False)
+    firstname = Column(String(50), nullable=False)
+    surname = Column(String(50), nullable=False)
     password_hash = Column(String(50), nullable=False)
     cellphone = Column(String(13), nullable=False)
     document = Column(String(11), nullable=False)
