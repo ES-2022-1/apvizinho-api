@@ -13,9 +13,9 @@ router = APIRouter()
 
 @router.post("/", response_model=AddressView)
 def create_address(
-    todo_address_create: AddressCreate, service: AddressService = Depends(deps.get_address_service)
+    address_create: AddressCreate, service: AddressService = Depends(deps.get_address_service)
 ):
-    return service.create(create=todo_address_create)
+    return service.create(create=address_create)
 
 
 @router.get("/", response_model=List[AddressView])
