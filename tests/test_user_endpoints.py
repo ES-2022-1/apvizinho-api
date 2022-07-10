@@ -57,3 +57,13 @@ def test_update_user(user, session, user_client, field, expected_field):
     response = user_client.update(id=user.id_user, update=json.dumps(data))
     assert response.status_code == 200
     assert response.json()[field] == expected_field
+
+
+def test_delete_user(user, session, user_client):
+    session.add(user)
+    session.commit()
+
+    user_client.delete(id=user.id_user)
+    response = user_client.get_by_id(id=user.id_user)
+    assert response.status_code == 404
+    assert response.json()["detail"] == "User not found"
