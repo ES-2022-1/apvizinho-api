@@ -4,7 +4,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from app.local.schemas import RoomView
+from app.local.schemas.room import RoomView
 
 
 class LocalBase(BaseModel):

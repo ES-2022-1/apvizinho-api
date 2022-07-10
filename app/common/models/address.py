@@ -7,19 +7,15 @@ from app.db.database import Base
 
 
 class Address(Base, TableModel):
-    __tablename__ = "address"
+    __tablename__ = "Address"
 
-    id_adress = Column(
+    id_address = Column(
         UUID(as_uuid=True),
         unique=True,
         primary_key=True,
         server_default=text(
             "gen_random_uuid()",
         ),
-        nullable=False,
-    )
-    id_local = Column(
-        ForeignKey("local.id_local", name="address_local_fk"),
         nullable=False,
     )
     street = Column(String(50), nullable=True)
