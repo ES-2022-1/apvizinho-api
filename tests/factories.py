@@ -38,11 +38,11 @@ def make_local():
         type="HOUSE",
         status="ACTIVE",
         address= dict(
-            street ='Silva Barbosa',
-            city ='Campina Grande',
-            number ='975',
-            complement ='Próximo a UFCG',
-            zip_code ='58400-825'
+            street ="Silva Barbosa",
+            city ="Campina Grande",
+            number ="975",
+            complement ="Próximo a UFCG",
+            zip_code ="58400-825"
         ),
         rooms = [
             dict(
@@ -54,7 +54,7 @@ def make_local():
                 allowed_smoker=False,
                 required_organized_person=True,
                 required_extroverted_person=False,
-                gender='FEMALE',
+                gender="FEMALE",
                 price=500
             )
         ]
