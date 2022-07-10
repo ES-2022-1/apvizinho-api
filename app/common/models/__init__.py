@@ -1,2 +1,3 @@
-from .todo_item import TodoItem  # noqa: F401
-from .todo_list import TodoList  # noqa: F401
+from .local import Local # noqa: F401
+from .address import Address # noqa: F401
+from .room import Room # noqa: F401
