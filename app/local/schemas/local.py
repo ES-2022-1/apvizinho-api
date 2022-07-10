@@ -1,10 +1,10 @@
-from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel
 
-from app.local.schemas.room import RoomView
+from app.local.schemas.address import AddressCreate, AddressView
+from app.local.schemas.room import RoomBase, RoomView
 
 
 class LocalBase(BaseModel):
@@ -20,8 +20,16 @@ class LocalBase(BaseModel):
     type: str
     status: str
 
+
+class LocalCreateBodyPayload(LocalBase):
+    id_user: UUID
+    address: AddressCreate
+    rooms: List[RoomBase]
+
+
 class LocalCreate(LocalBase):
-    ...
+    id_address: UUID
+    id_user: UUID
 
 
 class LocalView(LocalBase):
@@ -29,6 +37,7 @@ class LocalView(LocalBase):
     id_user: UUID
     id_address: UUID
     rooms: List[RoomView]
+    address: AddressView
 
     class Config:
         orm_mode = True

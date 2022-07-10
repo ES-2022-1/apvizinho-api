@@ -1,7 +1,8 @@
-from sqlalchemy import Column, String, text, Boolean
+from sqlalchemy import Boolean, Column, String, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import Numeric
+
 from app.common.models.table_model import TableModel
 from app.db.database import Base
 

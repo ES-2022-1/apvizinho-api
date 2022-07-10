@@ -1,8 +1,8 @@
-from sqlalchemy import Column, String, Text, text, Boolean
+from sqlalchemy import Boolean, Column, String, Text, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql.sqltypes import DateTime
 from sqlalchemy.sql.schema import ForeignKey
+
 from app.common.models.table_model import TableModel
 from app.db.database import Base
 
@@ -25,8 +25,7 @@ class Local(Base, TableModel):
     )
     rooms = relationship(
         "Room",
-        primaryjoin="and_(Local.id_local==Room.id_local, "
-        "Room.deleted_at.is_(None))",
+        primaryjoin="and_(Local.id_local==Room.id_local, " "Room.deleted_at.is_(None))",
         backref="local",
     )
     id_address = Column(
@@ -46,4 +45,3 @@ class Local(Base, TableModel):
     has_piped_gas = Column(Boolean, nullable=False)
     type = Column(String(50), nullable=False)
     status = Column(String(50), nullable=False)
-

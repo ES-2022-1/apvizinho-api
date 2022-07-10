@@ -22,18 +22,18 @@ def room(make_room):
 
 def test_create_room(room_client):
     data = {
-        #ajustar
+        # ajustar
         "id_local": "ajjksjsjk",
-        "has_bathroom": True, 
-        "has_garage": True ,
+        "has_bathroom": True,
+        "has_garage": True,
         "has_furniture": False,
         "has_cable_internet": True,
         "is_shared_room": False,
         "allowed_smoker": False,
-        "required_organized_person": True, 
-        "required_ectroverted_person": False, 
-        "gender":"feminino", 
-        "price": "500" 
+        "required_organized_person": True,
+        "required_ectroverted_person": False,
+        "gender": "feminino",
+        "price": "500",
     }
 
     response = room_client.create(json.dumps(data))

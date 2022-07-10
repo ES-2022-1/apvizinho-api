@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from .endpoints import local, address, room, user
+from .endpoints import address, local, room, user
 
 api_router = APIRouter()
 

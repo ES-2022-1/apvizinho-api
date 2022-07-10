@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 
 import app.api.deps as deps
 from app.common.exceptions import RecordNotFoundException, RecordNotFoundHTTPException
-from app.local.schemas.local import LocalCreate, LocalUpdate, LocalView
+from app.local.schemas.local import LocalCreateBodyPayload, LocalUpdate, LocalView
 from app.local.services.local_service import LocalService
 
 router = APIRouter()
@@ -13,7 +13,7 @@ router = APIRouter()
 
 @router.post("/", response_model=LocalView)
 def create_local(
-    local_create: LocalCreate, service: LocalService = Depends(deps.get_local_service)
+    local_create: LocalCreateBodyPayload, service: LocalService = Depends(deps.get_local_service)
 ):
     return service.create(create=local_create)
 
@@ -24,9 +24,7 @@ def get_all_local(service: LocalService = Depends(deps.get_local_service)):
 
 
 @router.get("/{id_local}", response_model=LocalView)
-def get_local_by_id(
-    id_local: UUID, service: LocalService = Depends(deps.get_local_service)
-):
+def get_local_by_id(id_local: UUID, service: LocalService = Depends(deps.get_local_service)):
     try:
         return service.get_by_id(id_local=id_local)
     except RecordNotFoundException:
@@ -34,9 +32,7 @@ def get_local_by_id(
 
 
 @router.delete("/{id_local}")
-def delete_local(
-    id_local: UUID, service: LocalService = Depends(deps.get_local_service)
-):
+def delete_local(id_local: UUID, service: LocalService = Depends(deps.get_local_service)):
     try:
         service.delete(id_local=id_local)
     except RecordNotFoundException:

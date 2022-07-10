@@ -34,9 +34,7 @@ def get_address_by_id(
 
 
 @router.delete("/{id_address}")
-def delete_address(
-    id_address: UUID, service: AddressService = Depends(deps.get_address_service)
-):
+def delete_address(id_address: UUID, service: AddressService = Depends(deps.get_address_service)):
     try:
         service.delete(id_address=id_address)
     except RecordNotFoundException:

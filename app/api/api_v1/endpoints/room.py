@@ -12,9 +12,7 @@ router = APIRouter()
 
 
 @router.post("/", response_model=RoomView)
-def create_room(
-    room_create: RoomCreate, service: RoomService = Depends(deps.get_room_service)
-):
+def create_room(room_create: RoomCreate, service: RoomService = Depends(deps.get_room_service)):
     return service.create(create=room_create)
 
 
@@ -24,9 +22,7 @@ def get_all_room(service: RoomService = Depends(deps.get_room_service)):
 
 
 @router.get("/{id_room}", response_model=RoomView)
-def get_room_by_id(
-    id_room: UUID, service: RoomService = Depends(deps.get_room_service)
-):
+def get_room_by_id(id_room: UUID, service: RoomService = Depends(deps.get_room_service)):
     try:
         return service.get_by_id(id_room=id_room)
     except RecordNotFoundException:
@@ -34,9 +30,7 @@ def get_room_by_id(
 
 
 @router.delete("/{id_room}")
-def delete_room(
-    id_room: UUID, service: RoomService = Depends(deps.get_room_service)
-):
+def delete_room(id_room: UUID, service: RoomService = Depends(deps.get_room_service)):
     try:
         service.delete(id_room=id_room)
     except RecordNotFoundException:
