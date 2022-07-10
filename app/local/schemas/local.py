@@ -13,6 +13,11 @@ class StatusEnum(str, Enum):
     DISABLED = "DISABLED"
 
 
+class LocalTypeEnum(str, Enum):
+    HOUSE = "HOUSE"
+    APARTMENT = "APARTMENT"
+
+
 class LocalBase(BaseModel):
     title: str
     description: str
@@ -23,8 +28,8 @@ class LocalBase(BaseModel):
     allow_pet: bool
     allow_events: bool
     has_piped_gas: bool
-    type: StatusEnum = StatusEnum.ACTIVE
-    status: str
+    status: StatusEnum = StatusEnum.ACTIVE
+    type: LocalTypeEnum
 
 
 class LocalCreateBodyPayload(LocalBase):
