@@ -24,8 +24,8 @@ class Local(Base, TableModel):
         nullable=False,
     )
     id_room = rooms = relationship(
-        "Romm",
-        primaryjoin="and_(Local.local==Romm.id_romm, "
+        "Room",
+        primaryjoin="and_(Local.local==Room.id_room, "
         "Room.deleted_at.is_(None))",
         backref="local",
     )
