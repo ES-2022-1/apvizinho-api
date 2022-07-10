@@ -24,6 +24,6 @@ def get_all_users(service: UserService = Depends(deps.get_user_service)):
 @router.get("/{id_user}", response_model=UserView)
 def get_users_by_id(id_user: UUID, service: UserService = Depends(deps.get_user_service)):
     try:
-        return service.get_by_id(id_todo_item=id_user)
+        return service.get_by_id(id_user=id_user)
     except RecordNotFoundException:
         raise RecordNotFoundHTTPException(detail="User not found")

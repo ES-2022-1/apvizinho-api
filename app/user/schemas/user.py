@@ -1,5 +1,6 @@
 from datetime import date
 from typing import Optional
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -22,6 +23,7 @@ class UserCreateHashedPassword(UserBase):
 
 
 class UserView(BaseModel):
+    id_user: UUID
     firstname: str
     surname: str
     email: str
