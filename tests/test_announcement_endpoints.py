@@ -94,3 +94,30 @@ def test_update_announcement(announcement, session, client, field, expected_fiel
     response = client.update(id=announcement.id_announcement, update=json.dumps(data))
     assert response.status_code == 200
     assert response.json()[field] == expected_field
+
+
+def test_delete_announcement(announcement, session, client):
+    session.add(announcement)
+    session.commit()
+
+    client.delete(id=announcement.id_announcement)
+    response = client.get_by_id(id=announcement.id_announcement)
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Announcement not found"
+
+
+def test_get_announcement_by_id(announcement, session, client):
+    session.add(announcement)
+    session.commit()
+    response = client.get_by_id(id=announcement.id_announcement)
+    assert response.status_code == 200
+    assert response.json()["id_announcement"] == str(announcement.id_announcement)
+
+
+def test_list_announcements(announcement, session, client):
+    session.add(announcement)
+    session.commit()
+    response = client.get_all()
+
+    assert response.status_code == 200
+    assert len(response.json()) == 1
