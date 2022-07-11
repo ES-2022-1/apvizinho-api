@@ -1,4 +1,4 @@
 from .address import Address  # noqa: F401
-from .local import Local  # noqa: F401
-from .room import Room  # noqa: F401
+from .announcement import Announcement  # noqa: F401
 from .user import User  # noqa: F401
+from .vacancy import Vacancy  # noqa: F401

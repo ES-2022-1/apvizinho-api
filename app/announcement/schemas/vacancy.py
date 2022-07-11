@@ -11,7 +11,7 @@ class GenderEnum(str, Enum):
     UNKNOWN = "UNKNOWN"
 
 
-class RoomBase(BaseModel):
+class VacancyBase(BaseModel):
     has_bathroom: bool
     has_garage: bool
     has_furniture: bool
@@ -24,19 +24,19 @@ class RoomBase(BaseModel):
     price: float
 
 
-class RoomCreate(RoomBase):
-    id_local: UUID
+class VacancyCreate(VacancyBase):
+    id_announcement: UUID
 
 
-class RoomView(RoomBase):
-    id_room: UUID
-    id_local: UUID
+class VacancyView(VacancyBase):
+    id_vacancy: UUID
+    id_announcement: UUID
 
     class Config:
         orm_mode = True
 
 
-class RoomUpdate(BaseModel):
+class VacancyUpdate(BaseModel):
     has_bathroom: Optional[bool]
     has_garage: Optional[bool]
     has_furniture: Optional[bool]

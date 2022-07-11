@@ -7,7 +7,7 @@ from app.db.database import Base
 
 
 class Address(Base, TableModel):
-    __tablename__ = "Address"
+    __tablename__ = "address"
 
     id_address = Column(
         UUID(as_uuid=True),
