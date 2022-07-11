@@ -2,6 +2,8 @@ import json
 
 import pytest
 
+from app.announcement.schemas.announcement import AnnouncementTypeEnum, StatusEnum
+
 from .base_client import BaseClient
 
 
@@ -11,19 +13,16 @@ class AnnouncementClient(BaseClient):
 
 
 @pytest.fixture
-def announcement_client(client):
+def client(client):
     return AnnouncementClient(client)
 
 
 @pytest.fixture
-def make_full_local(make_local, make_room):
-    local = make_local()
-    rooms = make_room(local=local)
-
-    return {"local": local, "rooms": [rooms]}
+def announcement(make_announcement):
+    return make_announcement()
 
 
-def test_create_announcement(make_user, announcement_client, session):
+def test_create_announcement(make_user, client, session):
     user = make_user()
     session.add(user)
     session.commit()
@@ -64,7 +63,34 @@ def test_create_announcement(make_user, announcement_client, session):
         ],
     }
 
-    response = announcement_client.create(json.dumps(data))
+    response = client.create(json.dumps(data))
 
     assert response.status_code == 200
     assert response.json()["title"] == "string"
+
+
+@pytest.mark.parametrize(
+    "field,expected_field",
+    [
+        ("title", "Novo Titulo"),
+        ("description", "Nova Descricao"),
+        ("is_close_to_university", False),
+        ("is_close_to_supermarket", False),
+        ("has_furniture", False),
+        ("has_internet", False),
+        ("allow_pet", False),
+        ("allow_events", False),
+        ("has_piped_gas", False),
+        ("type", AnnouncementTypeEnum.APARTMENT),
+        ("status", StatusEnum.DISABLED),
+    ],
+)
+def test_update_announcement(announcement, session, client, field, expected_field):
+    session.add(announcement)
+    session.commit()
+
+    data = {field: expected_field}
+
+    response = client.update(id=announcement.id_announcement, update=json.dumps(data))
+    assert response.status_code == 200
+    assert response.json()[field] == expected_field

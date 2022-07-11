@@ -64,5 +64,5 @@ class AnnouncementUpdate(BaseModel):
     allow_pet: Optional[bool]
     allow_events: Optional[bool]
     has_piped_gas: Optional[bool]
-    type: Optional[bool]
-    status: Optional[bool]
+    type: Optional[AnnouncementTypeEnum]
+    status: Optional[StatusEnum]

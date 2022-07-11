@@ -42,6 +42,8 @@ class Announcement(Base, TableModel):
 
     address = relationship("Address", foreign_keys=id_address, lazy="joined")
 
+    user = relationship("User", foreign_keys=id_user, lazy="joined")
+
     vacancies = relationship(
         "Vacancy",
         primaryjoin="and_(Announcement.id_announcement==Vacancy.id_announcement, "
