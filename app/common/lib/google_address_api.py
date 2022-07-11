@@ -13,12 +13,9 @@ class GoogleAddressApi:
             self.base_url, params={"key": self.auth, "address": f"{street} {city} {zip_code}"}
         ).json()["results"]
 
-        print(response)
         address = response[0]
-        print(address)
         location = address["geometry"]["location"]
 
-        print(location)
         lat = location["lat"]
         lng = location["lng"]
 
