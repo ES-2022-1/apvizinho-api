@@ -6,10 +6,10 @@ import app.common.models as models
 from app.common.repositories.base import BaseRepository
 
 
-class RoomRepository(BaseRepository[models.Room, UUID]):
+class VacancyRepository(BaseRepository[models.Vacancy, UUID]):
     def __init__(self, db: Session):
-        super(RoomRepository, self).__init__(
-            models.Room.id_room,
-            model_class=models.Room,
+        super(VacancyRepository, self).__init__(
+            models.Vacancy.id_vacancy,
+            model_class=models.Vacancy,
             db=db,
         )

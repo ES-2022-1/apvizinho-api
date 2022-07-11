@@ -4,8 +4,8 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from app.local.schemas.address import AddressCreate, AddressView
-from app.local.schemas.room import RoomBase, RoomView
+from app.announcement.schemas.address import AddressCreate, AddressView
+from app.announcement.schemas.vacancy import VacancyBase, VacancyView
 
 
 class StatusEnum(str, Enum):
@@ -13,12 +13,12 @@ class StatusEnum(str, Enum):
     DISABLED = "DISABLED"
 
 
-class LocalTypeEnum(str, Enum):
+class AnnouncementTypeEnum(str, Enum):
     HOUSE = "HOUSE"
     APARTMENT = "APARTMENT"
 
 
-class LocalBase(BaseModel):
+class AnnouncementBase(BaseModel):
     title: str
     description: str
     is_close_to_university: bool
@@ -29,32 +29,32 @@ class LocalBase(BaseModel):
     allow_events: bool
     has_piped_gas: bool
     status: StatusEnum = StatusEnum.ACTIVE
-    type: LocalTypeEnum
+    type: AnnouncementTypeEnum
 
 
-class LocalCreateBodyPayload(LocalBase):
+class AnnouncementCreateBodyPayload(AnnouncementBase):
     id_user: UUID
     address: AddressCreate
-    rooms: List[RoomBase]
+    vacancies: List[VacancyBase]
 
 
-class LocalCreate(LocalBase):
+class AnnouncementCreate(AnnouncementBase):
     id_address: UUID
     id_user: UUID
 
 
-class LocalView(LocalBase):
-    id_local: UUID
+class AnnouncementView(AnnouncementBase):
+    id_announcement: UUID
     id_user: UUID
     id_address: UUID
-    rooms: List[RoomView]
+    vacancies: List[VacancyView]
     address: AddressView
 
     class Config:
         orm_mode = True
 
 
-class LocalUpdate(BaseModel):
+class AnnouncementUpdate(BaseModel):
     title: Optional[str]
     description: Optional[str]
     is_close_to_university: Optional[bool]
@@ -64,5 +64,5 @@ class LocalUpdate(BaseModel):
     allow_pet: Optional[bool]
     allow_events: Optional[bool]
     has_piped_gas: Optional[bool]
-    type: Optional[bool]
-    status: Optional[bool]
+    type: Optional[AnnouncementTypeEnum]
+    status: Optional[StatusEnum]
