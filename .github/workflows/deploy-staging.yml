@@ -1,6 +1,7 @@
 name: Deploy Staging
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -18,3 +19,4 @@ jobs:
           usedocker: true
         env:
           SQLALCHEMY_DATABASE_URL: ${{secrets.SQLALCHEMY_DATABASE_URL}}
+          GOOGLE_API_ADDRESS_KEY: ${{ secrets.GOOGLE_API_ADDRESS_KEY }}
