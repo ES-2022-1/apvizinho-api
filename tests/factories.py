@@ -4,6 +4,7 @@ import pytest
 from pendulum import date
 
 from app.announcement.schemas.announcement import AnnouncementTypeEnum, StatusEnum
+from app.announcement.schemas.vacancy import GenderEnum
 from app.common import models
 
 
@@ -41,6 +42,29 @@ def make_address():
         return models.Address(id_address=uuid.uuid4(), **{**defaults, **overrides})
 
     return _make_address
+
+
+@pytest.fixture
+def make_vacancy(make_announcement):
+    defaults = dict(
+        has_bathroom=True,
+        has_garage=True,
+        has_furniture=True,
+        has_cable_internet=True,
+        is_shared_room=True,
+        allowed_smoker=True,
+        required_organized_person=True,
+        required_extroverted_person=True,
+        gender=GenderEnum.MALE,
+        price=30,
+    )
+
+    def _make_vacancy(announcement: models.Announcement = make_announcement(), **overrides):
+        return models.Vacancy(
+            id_vacancy=uuid.uuid4(), announcement=announcement, **{**defaults, **overrides}
+        )
+
+    return _make_vacancy
 
 
 @pytest.fixture

@@ -1,5 +1,6 @@
 from sqlalchemy import Boolean, Column, String, text
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import Numeric
 
@@ -34,3 +35,5 @@ class Vacancy(Base, TableModel):
     required_extroverted_person = Column(Boolean, nullable=False)
     gender = Column(String(50), nullable=True)
     price = Column(Numeric, nullable=False)
+
+    announcement = relationship("Announcement", foreign_keys=id_announcement, lazy="joined")
