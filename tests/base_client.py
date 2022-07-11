@@ -17,7 +17,7 @@ class BaseClient:
 
     def get_all(self):
         return self.client.get(f"/{self.path}/", headers=self.headers)
-
+    
     def create(self, create):
         return self.client.post(f"/{self.path}/", data=create, headers=self.headers)
 
