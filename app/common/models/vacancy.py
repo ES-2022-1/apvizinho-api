@@ -7,10 +7,10 @@ from app.common.models.table_model import TableModel
 from app.db.database import Base
 
 
-class Room(Base, TableModel):
-    __tablename__ = "Room"
+class Vacancy(Base, TableModel):
+    __tablename__ = "vacancy"
 
-    id_room = Column(
+    id_vacancy = Column(
         UUID(as_uuid=True),
         unique=True,
         primary_key=True,
@@ -19,10 +19,11 @@ class Room(Base, TableModel):
         ),
         nullable=False,
     )
-    id_local = Column(
-        ForeignKey("Local.id_local", name="room_local_fk"),
+    id_announcement = Column(
+        ForeignKey("announcement.id_announcement", name="vacancy_announcement_fk"),
         nullable=False,
     )
+
     has_bathroom = Column(Boolean, nullable=False)
     has_garage = Column(Boolean, nullable=False)
     has_furniture = Column(Boolean, nullable=False)

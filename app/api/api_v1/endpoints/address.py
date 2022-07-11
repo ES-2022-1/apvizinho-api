@@ -4,9 +4,9 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 
 import app.api.deps as deps
+from app.announcement.schemas.address import AddressCreate, AddressUpdate, AddressView
+from app.announcement.services.address_service import AddressService
 from app.common.exceptions import RecordNotFoundException, RecordNotFoundHTTPException
-from app.local.schemas.address import AddressCreate, AddressUpdate, AddressView
-from app.local.services.address_service import AddressService
 
 router = APIRouter()
 

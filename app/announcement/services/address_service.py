@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
 
+from app.announcement.repositories.address_repository import AddressRepository
+from app.announcement.schemas import AddressCreate, AddressUpdate, AddressView
 from app.common.lib.google_address_api import GoogleAddressApi
 from app.common.services.base import BaseService
-from app.local.repositories.address_repository import AddressRepository
-from app.local.schemas import AddressCreate, AddressUpdate, AddressView
 
 
 class AddressService(BaseService[AddressCreate, AddressUpdate, AddressView]):
