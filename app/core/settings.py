@@ -8,3 +8,5 @@ SQLALCHEMY_DATABASE_URL = config(
     "SQLALCHEMY_DATABASE_URL",
     default="postgresql://postgres:@localhost:5432/postgres_test",
 )
+
+GOOGLE_API_ADDRESS_KEY = config("GOOGLE_API_ADDRESS_KEY")

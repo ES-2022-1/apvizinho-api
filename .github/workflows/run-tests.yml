@@ -70,6 +70,8 @@ jobs:
           isort --check-only .
 
       - name: Run tests
+        env:
+            GOOGLE_API_ADDRESS_KEY: ${{ secrets.GOOGLE_API_ADDRESS_KEY }}
         run: |
           set -o pipefail
           source .venv/bin/activate
