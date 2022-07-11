@@ -5,14 +5,14 @@ import pytest
 from .base_client import BaseClient
 
 
-class LocalClient(BaseClient):
+class AnnouncementClient(BaseClient):
     def __init__(self, client):
-        super().__init__(client, endpoint_path="local")
+        super().__init__(client, endpoint_path="announcement")
 
 
 @pytest.fixture
-def local_client(client):
-    return LocalClient(client)
+def announcement_client(client):
+    return AnnouncementClient(client)
 
 
 @pytest.fixture
@@ -23,7 +23,7 @@ def make_full_local(make_local, make_room):
     return {"local": local, "rooms": [rooms]}
 
 
-def test_create_local(make_user, local_client, session):
+def test_create_announcement(make_user, announcement_client, session):
     user = make_user()
     session.add(user)
     session.commit()
@@ -48,7 +48,7 @@ def test_create_local(make_user, local_client, session):
             "complement": "Lote B06",
             "zip_code": "585434500",
         },
-        "rooms": [
+        "vacancies": [
             {
                 "has_bathroom": True,
                 "has_garage": True,
@@ -64,7 +64,7 @@ def test_create_local(make_user, local_client, session):
         ],
     }
 
-    response = local_client.create(json.dumps(data))
+    response = announcement_client.create(json.dumps(data))
 
     assert response.status_code == 200
     assert response.json()["title"] == "string"
