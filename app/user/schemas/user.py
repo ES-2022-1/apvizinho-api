@@ -30,6 +30,7 @@ class UserView(BaseModel):
     cellphone: str
     birthdate: date
     document: str
+    already_reviewed: bool
 
     class Config:
         orm_mode = True
