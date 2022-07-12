@@ -5,8 +5,8 @@ from app.common.models.table_model import TableModel
 from app.db.database import Base
 
 
-class User(Base, TableModel):
-    __tablename__ = "user"
+class Users(Base, TableModel):
+    __tablename__ = "users"
 
     id_user = Column(
         UUID(as_uuid=True),

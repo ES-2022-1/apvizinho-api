@@ -20,7 +20,7 @@ class Announcement(Base, TableModel):
         nullable=False,
     )
     id_user = Column(
-        ForeignKey("user.id_user", name="announcement_user_fk"),
+        ForeignKey("users.id_user", name="announcement_user_fk"),
         nullable=False,
     )
     id_address = Column(
@@ -42,7 +42,7 @@ class Announcement(Base, TableModel):
 
     address = relationship("Address", foreign_keys=id_address, lazy="joined")
 
-    user = relationship("User", foreign_keys=id_user, lazy="joined")
+    user = relationship("Users", foreign_keys=id_user, lazy="joined")
 
     vacancies = relationship(
         "Vacancy",
