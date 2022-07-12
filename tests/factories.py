@@ -21,7 +21,7 @@ def make_user():
     )
 
     def _make_user(**overrides):
-        return models.User(id_user=uuid.uuid4(), **{**defaults, **overrides})
+        return models.Users(id_user=uuid.uuid4(), **{**defaults, **overrides})
 
     return _make_user
 
@@ -84,10 +84,20 @@ def make_announcement(make_user, make_address):
     )
 
     def _make_announcement(
-        user: models.User = make_user(), address: models.Address = make_address(), **overrides
+        user: models.Users = make_user(), address: models.Address = make_address(), **overrides
     ):
         return models.Announcement(
             id_announcement=uuid.uuid4(), user=user, address=address, **{**defaults, **overrides}
         )
 
     return _make_announcement
+
+
+@pytest.fixture
+def make_review(make_user):
+    defaults = dict(comment="string", score=4)
+
+    def _make_review(user: models.Users = make_user(), **overrides):
+        return models.Review(id_review=uuid.uuid4(), user=user, **{**defaults, **overrides})
+
+    return _make_review
