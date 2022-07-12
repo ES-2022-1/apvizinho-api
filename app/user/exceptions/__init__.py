@@ -6,5 +6,5 @@ class UserAlreadyReviewedException(Exception):
 
 
 class UserAlreadyReviewedHTTPException(HTTPException):
-    def __init__(self, status_code=404, detail="User Already Reviewd the system") -> None:
+    def __init__(self, status_code=400, detail="User Already Reviewd the system") -> None:
         super().__init__(status_code, detail=detail)

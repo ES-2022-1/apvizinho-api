@@ -111,5 +111,5 @@ def test_user_already_reviewed(make_user, session, user_client):
 
     data = {"comment": "string", "score": 5}
     response = user_client.review(user.id_user, json.dumps(data))
-    assert response.status_code == 404
+    assert response.status_code == 400
     assert response.json()["detail"] == "User Already Reviewd the system"
