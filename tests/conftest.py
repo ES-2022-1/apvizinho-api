@@ -12,7 +12,13 @@ from sqlalchemy_utils import create_database, database_exists
 from app.api.deps import get_db
 from app.core.settings import SQLALCHEMY_DATABASE_URL
 from app.main import app
-from tests.factories import make_address, make_announcement, make_user, make_vacancy  # noqa: F401
+from tests.factories import (  # noqa: F401
+    make_address,
+    make_announcement,
+    make_review,
+    make_user,
+    make_vacancy,
+)
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
