@@ -5,8 +5,8 @@ from fastapi import APIRouter, Depends
 
 import app.api.deps as deps
 from app.common.exceptions import RecordNotFoundException, RecordNotFoundHTTPException
-from app.user.schemas import UserCreate, UserView
-from app.user.schemas.user import UserUpdate
+from app.user.schemas import ReviewView, UserCreate, UserUpdate, UserView
+from app.user.schemas.review import ReviewBodyPayload
 from app.user.services.user_service import UserService
 
 router = APIRouter()
@@ -45,3 +45,12 @@ def update_user(
     service: UserService = Depends(deps.get_user_service),
 ):
     return service.update(update=user_update, id_user=id_user)
+
+
+@router.post("/{id_user}/review", response_model=ReviewView)
+def review_system(
+    review_create: ReviewBodyPayload,
+    id_user: UUID,
+    service: UserService = Depends(deps.get_user_service),
+):
+    return service.review(id_user=id_user, review_body_payload=review_create)

@@ -43,3 +43,4 @@ class UserUpdate(BaseModel):
     cellphone: Optional[str]
     birthdate: Optional[date]
     document: Optional[str]
+    already_reviewed: Optional[bool]
