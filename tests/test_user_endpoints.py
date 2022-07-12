@@ -9,6 +9,9 @@ class UserClient(BaseClient):
     def __init__(self, client):
         super().__init__(client, endpoint_path="user")
 
+    def review(self, id_user, data):
+        return self.client.post(f"/{self.path}/{id_user}/review", data=data, headers=self.headers)
+
 
 @pytest.fixture
 def user_client(client):
@@ -18,6 +21,11 @@ def user_client(client):
 @pytest.fixture
 def user(make_user):
     return make_user()
+
+
+@pytest.fixture
+def review(make_review):
+    return make_review()
 
 
 def test_create_user(user_client):
@@ -84,3 +92,13 @@ def test_list_users(user, session, user_client):
 
     assert response.status_code == 200
     assert len(response.json()) == 1
+
+
+def test_review(user, session, user_client):
+    session.add(user)
+    session.commit()
+
+    data = {"comment": "string", "score": 5}
+    response = user_client.review(user.id_user, json.dumps(data))
+    assert response.status_code == 200
+    assert response.json()["user"]["already_reviewed"] == True  # noqa: E712

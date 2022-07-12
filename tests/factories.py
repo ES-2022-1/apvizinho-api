@@ -91,3 +91,25 @@ def make_announcement(make_user, make_address):
         )
 
     return _make_announcement
+
+
+@pytest.fixture
+def make_review(make_user):
+    defaults = dict(
+        title="string",
+        description="string",
+        is_close_to_university=True,
+        is_close_to_supermarket=True,
+        has_furniture=True,
+        has_internet=True,
+        allow_pet=True,
+        allow_events=True,
+        has_piped_gas=True,
+        status=StatusEnum.ACTIVE,
+        type=AnnouncementTypeEnum.HOUSE,
+    )
+
+    def _make_review(user: models.Users = make_user(), **overrides):
+        return models.Review(id_review=uuid.uuid4(), user=user, **{**defaults, **overrides})
+
+    return _make_review
