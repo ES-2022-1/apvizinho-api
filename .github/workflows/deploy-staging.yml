@@ -1,6 +1,7 @@
 name: Deploy Staging
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -17,4 +18,5 @@ jobs:
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           usedocker: true
         env:
-          SQLALCHEMY_DATABASE_URL: ${{secrets.SQLALCHEMY_DATABASE_URL}}
+          SQLALCHEMY_DATABASE_URL: ${{secrets.SQLALCHEMY_DATABASE_URL_STAGING }}
+          GOOGLE_API_ADDRESS_KEY: ${{ secrets.GOOGLE_API_ADDRESS_KEY }}
