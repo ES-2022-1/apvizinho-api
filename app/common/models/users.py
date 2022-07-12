@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, String, text
+from sqlalchemy import Boolean, Column, Date, String, text
 from sqlalchemy.dialects.postgresql import UUID
 
 from app.common.models.table_model import TableModel
@@ -25,3 +25,4 @@ class Users(Base, TableModel):
     cellphone = Column(String(13), nullable=False)
     document = Column(String(11), nullable=False)
     birthdate = Column(Date, nullable=False)
+    already_reviewed = Column(Boolean, nullable=False, default=False)
