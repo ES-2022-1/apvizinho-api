@@ -102,3 +102,14 @@ def test_review(user, session, user_client):
     response = user_client.review(user.id_user, json.dumps(data))
     assert response.status_code == 200
     assert response.json()["user"]["already_reviewed"] == True  # noqa: E712
+
+
+def test_user_already_reviewed(make_user, session, user_client):
+    user = make_user(already_reviewed=True)
+    session.add(user)
+    session.commit()
+
+    data = {"comment": "string", "score": 5}
+    response = user_client.review(user.id_user, json.dumps(data))
+    assert response.status_code == 404
+    assert response.json()["detail"] == "User Already Reviewd the system"
