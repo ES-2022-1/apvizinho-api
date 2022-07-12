@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.common.services.base import BaseService
 from app.common.utils import password as password_utils
+from app.user.exceptions import UserAlreadyReviewedException
 from app.user.repositories.user_repository import UserRepository
 from app.user.schemas import UserCreate, UserUpdate, UserView
 from app.user.schemas.review import ReviewBodyPayload, ReviewCreate, ReviewView
@@ -28,6 +29,11 @@ class UserService(BaseService[UserCreate, UserUpdate, UserView]):
         return self.repository.add(user_create)
 
     def review(self, id_user: UUID, review_body_payload: ReviewBodyPayload) -> ReviewView:
+        user = self.get_by_id(id_user=id_user)
+
+        if user.already_reviewed:
+            raise UserAlreadyReviewedException
+
         review_create = ReviewCreate(**review_body_payload.dict(), id_user=id_user)
         user_update = UserUpdate(already_reviewed=True)
         self.update(id_user=id_user, update=user_update)

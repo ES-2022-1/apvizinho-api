@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends
 
 import app.api.deps as deps
 from app.common.exceptions import RecordNotFoundException, RecordNotFoundHTTPException
+from app.user.exceptions import UserAlreadyReviewedException, UserAlreadyReviewedHTTPException
 from app.user.schemas import ReviewView, UserCreate, UserUpdate, UserView
 from app.user.schemas.review import ReviewBodyPayload
 from app.user.services.user_service import UserService
@@ -53,4 +54,7 @@ def review_system(
     id_user: UUID,
     service: UserService = Depends(deps.get_user_service),
 ):
-    return service.review(id_user=id_user, review_body_payload=review_create)
+    try:
+        return service.review(id_user=id_user, review_body_payload=review_create)
+    except UserAlreadyReviewedException:
+        raise UserAlreadyReviewedHTTPException
