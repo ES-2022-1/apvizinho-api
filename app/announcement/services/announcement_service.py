@@ -1,6 +1,7 @@
 from typing import List
-from sqlalchemy.orm import Session
+
 from haversine import haversine
+from sqlalchemy.orm import Session
 
 from app.announcement.repositories.announcement_repository import AnnouncementRepository
 from app.announcement.schemas import (
@@ -17,7 +18,7 @@ from app.announcement.schemas.vacancy import GenderEnum, VacancyCreate
 from app.announcement.services.address_service import AddressService
 from app.announcement.services.vacancy_service import VacancyService
 from app.common.services.base import BaseService
-from app.common.utils.constants import UFCG_COORDINATES, RADIUS
+from app.common.utils.constants import RADIUS, UFCG_COORDINATES
 
 
 class AnnouncementService(

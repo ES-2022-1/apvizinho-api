@@ -3,9 +3,9 @@ import json
 import pytest
 
 from app.announcement.schemas.announcement import (
+    AnnouncementTagsEnum,
     AnnouncementTypeEnum,
     StatusEnum,
-    AnnouncementTagsEnum,
 )
 
 from .base_client import BaseClient
