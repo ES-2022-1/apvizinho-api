@@ -1,8 +1,9 @@
 import json
+from typing import List
 
 import pytest
 
-from app.announcement.schemas.announcement import AnnouncementTypeEnum, StatusEnum, AnnouncementFilter
+from app.announcement.schemas.announcement import AnnouncementTypeEnum, StatusEnum, AnnouncementTagsEnum
 
 from .base_client import BaseClient
 
@@ -11,8 +12,8 @@ class AnnouncementClient(BaseClient):
     def __init__(self, client):
         super().__init__(client, endpoint_path="announcement")
 
-    def list_announcements_by_filter(self, announcement_filter: AnnouncementFilter):
-        return self.client.post(f"{self.path}/filter", headers=self.headers, data=announcement_filter)
+    def list_announcements_by_filter(self, announcement_filter):
+        return self.client.post(f"{self.path}/filter", headers=self.headers, json=announcement_filter)
 
 
 @pytest.fixture
@@ -148,7 +149,7 @@ def test_list_announcements_by_filter(make_user, session, client):
             "city": "Campina Grande",
             "number": "200",
             "complement": "",
-            "zip_code": "58429110",
+            "zip_code": "58429110"
         },
         "vacancies": [
             {
@@ -163,7 +164,7 @@ def test_list_announcements_by_filter(make_user, session, client):
                 "gender": "FEMALE",
                 "price": 0,
             }
-        ],
+        ]
     }
 
     data_anuncio2 = {
@@ -184,7 +185,7 @@ def test_list_announcements_by_filter(make_user, session, client):
             "city": "Campina Grande",
             "number": "380",
             "complement": "",
-            "zip_code": "58416543",
+            "zip_code": "58416543"
         },
         "vacancies": [
             {
@@ -199,7 +200,7 @@ def test_list_announcements_by_filter(make_user, session, client):
                 "gender": "FEMALE",
                 "price": 0,
             }
-        ],
+        ]
     }
 
     data_anuncio3 = {
@@ -235,18 +236,20 @@ def test_list_announcements_by_filter(make_user, session, client):
                 "gender": "FEMALE",
                 "price": 0,
             }
-        ],
+        ]
     }
 
     client.create(json.dumps(data_anuncio1))
     client.create(json.dumps(data_anuncio2))
     client.create(json.dumps(data_anuncio3))
 
-    filters = ["IS_CLOSE_TO_UNIVERSITY", "IS_CLOSE_TO_SUPERMARKET", "ALLOW_PET", "FEMALE_GENDER"]
+    filters = {
+        "filters": [AnnouncementTagsEnum.IS_CLOSE_TO_UNIVERSITY, AnnouncementTagsEnum.IS_CLOSE_TO_SUPERMARKET, AnnouncementTagsEnum.ALLOW_PETS, AnnouncementTagsEnum.FEMALE_GENDER]
+    }
 
     response = client.list_announcements_by_filter(filters)
 
     assert response.status_code == 200
-    assert list(map(lambda x: x.title, response.json())) == ["anuncio 3", "anuncio 1", "anuncio 2"]
+    assert list(map(lambda x: x["title"], response.json())) == ["anuncio 3", "anuncio 1", "anuncio 2"]
     
 
