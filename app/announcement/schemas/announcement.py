@@ -17,6 +17,7 @@ class AnnouncementTypeEnum(str, Enum):
     HOUSE = "HOUSE"
     APARTMENT = "APARTMENT"
 
+
 class AnnouncementTagsEnum(str, Enum):
     ALLOW_EVENTS = "ALLOW_EVENTS"
     ALLOW_PETS = "ALLOW_PETS"
@@ -83,6 +84,7 @@ class AnnouncementUpdate(BaseModel):
     has_piped_gas: Optional[bool]
     type: Optional[AnnouncementTypeEnum]
     status: Optional[StatusEnum]
+
 
 class AnnouncementFilter(BaseModel):
     filters: List[AnnouncementTagsEnum]

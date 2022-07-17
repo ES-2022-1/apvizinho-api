@@ -59,5 +59,8 @@ def update_announcement(
 
 
 @router.post("/filter", response_model=List[AnnouncementView])
-def list_announcements_by_filter(announcement_filter: AnnouncementFilter, service: AnnouncementService = Depends(deps.get_announcement_service)):
+def list_announcements_by_filter(
+    announcement_filter: AnnouncementFilter,
+    service: AnnouncementService = Depends(deps.get_announcement_service),
+):
     return service.filter(announcement_filter)

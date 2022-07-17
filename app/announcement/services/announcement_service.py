@@ -1,3 +1,4 @@
+from os import sched_param
 from typing import List
 from sqlalchemy.orm import Session
 from haversine import haversine
@@ -9,7 +10,11 @@ from app.announcement.schemas import (
     AnnouncementView,
 )
 from app.announcement.schemas import announcement
-from app.announcement.schemas.announcement import AnnouncementCreate, AnnouncementFilter, AnnouncementTagsEnum
+from app.announcement.schemas.announcement import (
+    AnnouncementCreate,
+    AnnouncementFilter,
+    AnnouncementTagsEnum,
+)
 from app.announcement.schemas.vacancy import GenderEnum, VacancyCreate
 from app.announcement.services.address_service import AddressService
 from app.announcement.services.vacancy_service import VacancyService
@@ -56,26 +61,28 @@ class AnnouncementService(
             score = self.__calculate_announcement_score(announcement, filters)
             ranked_announcements[announcement] = score
 
-        ranked_announcements = dict(sorted(ranked_announcements.items(), key=lambda item: item[1], reverse=True))
+        ranked_announcements = dict(
+            sorted(ranked_announcements.items(), key=lambda item: item[1], reverse=True)
+        )
         announcements = list(ranked_announcements.keys())
 
         return announcements
 
-
-    def __calculate_announcement_score(self, announcement:AnnouncementView, filters:list):
+    def __calculate_announcement_score(self, announcement: AnnouncementView, filters: list):
         true_items = self.__extract_true_items(announcement)
         matched, match_score = self.__get_matched_items(filters, true_items)
-        
+
         m = len(matched)
         n = len(filters)
 
-        announcement_coordinates = (announcement.address.latitude,announcement.address.longitude)
+        announcement_coordinates = (announcement.address.latitude, announcement.address.longitude)
         d = haversine(UFCG_COORDINATES, announcement_coordinates)
 
-        return ((m/n) * match_score) + (RADIUS - (d/RADIUS))
+        score = ((m / n) * match_score) + (RADIUS - (d / RADIUS))
 
+        return score
 
-    def __extract_true_items(self, announcement:AnnouncementView):
+    def __extract_true_items(self, announcement: AnnouncementView):
 
         true_items = list()
 
@@ -93,7 +100,7 @@ class AnnouncementService(
             true_items.append(AnnouncementTagsEnum.IS_CLOSE_TO_SUPERMARKET)
         if announcement.is_close_to_university:
             true_items.append(AnnouncementTagsEnum.IS_CLOSE_TO_UNIVERSITY)
-        
+
         for vacancy in announcement.vacancies:
             if vacancy.allowed_smoker:
                 true_items.append(AnnouncementTagsEnum.ALLOWED_SMOKER)
@@ -107,22 +114,31 @@ class AnnouncementService(
                 true_items.append(AnnouncementTagsEnum.REQUIRED_EXTROVERTED_PERSON)
             if vacancy.required_organized_person:
                 true_items.append(AnnouncementTagsEnum.REQUIRED_ORGANIZED_PERSON)
-            
+
             if vacancy.gender == GenderEnum.FEMALE:
                 true_items.append(AnnouncementTagsEnum.FEMALE_GENDER)
             elif vacancy.gender == GenderEnum.MALE:
                 true_items.append(AnnouncementTagsEnum.MALE_GENDER)
-        
+
         return true_items
 
     def __get_matched_items(self, filters, items):
         matched = list()
         match_score = 0
-        
+
         for i in range(len(filters)):
             filter = filters[i]
             if filter in items:
-                matched.append(filters)
+                matched.append(filter)
                 match_score += i
+
+        if (
+            (AnnouncementTagsEnum.MALE_GENDER in filters)
+            and (AnnouncementTagsEnum.MALE_GENDER not in matched)
+        ) or (
+            (AnnouncementTagsEnum.FEMALE_GENDER in filters)
+            and (AnnouncementTagsEnum.FEMALE_GENDER not in matched)
+        ):
+            match_score = 0
 
         return matched, match_score

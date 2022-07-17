@@ -12,4 +12,3 @@ class AnnouncementRepository(BaseRepository[models.Announcement, UUID]):
             model_class=models.Announcement,
             db=db,
         )
-    
