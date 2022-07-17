@@ -58,6 +58,6 @@ def update_announcement(
     return service.update(update=announcement_update, id_announcement=id_announcement)
 
 
-@router.post("/filter")
-def list_announcements_by_filter(announcement_filter: list, service: AnnouncementService = Depends(deps.get_announcement_service)):
+@router.post("/filter", response_model=List[AnnouncementView])
+def list_announcements_by_filter(announcement_filter: AnnouncementFilter, service: AnnouncementService = Depends(deps.get_announcement_service)):
     return service.filter(announcement_filter)
