@@ -1,5 +1,4 @@
 from uuid import UUID
-
 from sqlalchemy.orm import Session
 
 import app.common.models as models
@@ -13,3 +12,4 @@ class AnnouncementRepository(BaseRepository[models.Announcement, UUID]):
             model_class=models.Announcement,
             db=db,
         )
+    

@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends
 import app.api.deps as deps
 from app.announcement.schemas.announcement import (
     AnnouncementCreateBodyPayload,
+    AnnouncementFilter,
     AnnouncementUpdate,
     AnnouncementView,
 )
@@ -55,3 +56,8 @@ def update_announcement(
     service: AnnouncementService = Depends(deps.get_announcement_service),
 ):
     return service.update(update=announcement_update, id_announcement=id_announcement)
+
+
+@router.get("/filter")
+def list_announcements_by_filter(announcement_filter: AnnouncementFilter, service: AnnouncementService = Depends(deps.get_announcement_service)):
+    return service.filter(announcement_filter)
