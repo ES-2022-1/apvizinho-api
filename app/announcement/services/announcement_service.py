@@ -1,4 +1,3 @@
-from os import sched_param
 from typing import List
 from sqlalchemy.orm import Session
 from haversine import haversine
@@ -9,7 +8,6 @@ from app.announcement.schemas import (
     AnnouncementUpdate,
     AnnouncementView,
 )
-from app.announcement.schemas import announcement
 from app.announcement.schemas.announcement import (
     AnnouncementCreate,
     AnnouncementFilter,
