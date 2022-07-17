@@ -12,7 +12,7 @@ class AnnouncementClient(BaseClient):
         super().__init__(client, endpoint_path="announcement")
 
     def list_announcements_by_filter(self, announcement_filter: AnnouncementFilter):
-        return self.client.get(f"{self.path}/filter", headers=self.headers, data=announcement_filter)
+        return self.client.post(f"{self.path}/filter", headers=self.headers, data=announcement_filter)
 
 
 @pytest.fixture
@@ -242,7 +242,7 @@ def test_list_announcements_by_filter(make_user, session, client):
     client.create(json.dumps(data_anuncio2))
     client.create(json.dumps(data_anuncio3))
 
-    filters = AnnouncementFilter(filters=["IS_CLOSE_TO_UNIVERSITY", "IS_CLOSE_TO_SUPERMARKET", "ALLOW_PET", "FEMALE_GENDER"])
+    filters = ["IS_CLOSE_TO_UNIVERSITY", "IS_CLOSE_TO_SUPERMARKET", "ALLOW_PET", "FEMALE_GENDER"]
 
     response = client.list_announcements_by_filter(filters)
 
