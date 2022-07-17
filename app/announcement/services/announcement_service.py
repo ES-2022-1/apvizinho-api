@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy.orm import Session
 from haversine import haversine
 
@@ -45,16 +46,17 @@ class AnnouncementService(
 
         return announcement
 
-    def filter(self, filters: list):
+    def filter(self, announcement_filter: AnnouncementFilter) -> List[AnnouncementView]:
         all_announcements = self.get_all()
         ranked_announcements = dict()
+        filters = announcement_filter.filters
         filters = list(reversed(filters))
 
         for announcement in all_announcements:
             score = self.__calculate_announcement_score(announcement, filters)
             ranked_announcements[announcement] = score
 
-        ranked_announcements = dict(sorted(ranked_announcements.items(), key=lambda item: item[1]))
+        ranked_announcements = dict(sorted(ranked_announcements.items(), key=lambda item: item[1], reverse=True))
         announcements = list(ranked_announcements.keys())
 
         return announcements

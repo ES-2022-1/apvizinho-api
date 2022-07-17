@@ -85,4 +85,4 @@ class AnnouncementUpdate(BaseModel):
     status: Optional[StatusEnum]
 
 class AnnouncementFilter(BaseModel):
-    filters: list
+    filters: List[AnnouncementTagsEnum]
