@@ -69,8 +69,34 @@ def list_announcements_by_filter(
 
 @router.post("/upload")
 def upload_announcement_images(
-    announcement_id: UUID,
+    id_announcement: UUID,
     file: UploadFile = File(...),
     service: AnnouncementService = Depends(deps.get_announcement_service),
 ):
-    return service.save_file(announcement_id=announcement_id, uploaded_file=file)
+    try:
+        return service.save_file(id_announcement=id_announcement, uploaded_file=file)
+    except RecordNotFoundException:
+        raise RecordNotFoundHTTPException(detail="Announcement not found")
+
+
+@router.post("/{id_announcement}/images")
+def get_announcement_images(
+    id_announcement: str,
+    service: AnnouncementService = Depends(deps.get_announcement_service),
+):
+    try:
+        return service.get_files(id_announcement=id_announcement)
+    except RecordNotFoundException:
+        raise RecordNotFoundHTTPException(detail="Announcement not found")
+
+
+@router.delete("/{id_announcement}/images/{file_name}")
+def delete_announcement_image(
+    id_announcement: str,
+    file_name: str,
+    service: AnnouncementService = Depends(deps.get_announcement_service),
+):
+    try:
+        return service.delete_file(id_announcement=id_announcement, file_name=file_name)
+    except RecordNotFoundException:
+        raise RecordNotFoundHTTPException(detail="Announcement not found")

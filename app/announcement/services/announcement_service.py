@@ -1,7 +1,6 @@
 from mimetypes import MimeTypes
-from typing import Any, List
-from uuid import UUID
-import uuid
+from typing import List
+from xmlrpc.client import boolean
 
 from haversine import haversine
 from sqlalchemy.orm import Session
@@ -40,6 +39,7 @@ class AnnouncementService(
         self.vacancy_service = vacancy_service
         self.address_service = address_service
         self.s3 = boto3.client("s3")
+        self.AWS_BUCKET_NAME = os.environ["AWS_BUCKET_NAME"]
 
     def create(self, create: AnnouncementCreateBodyPayload) -> AnnouncementView:
         address = self.address_service.create(create.address)
@@ -74,20 +74,61 @@ class AnnouncementService(
 
         return announcements
 
-    def save_file(self, announcement_id: UUID, uploaded_file: UploadFile) -> Any:
+    def save_file(self, id_announcement: str, uploaded_file: UploadFile) -> boolean:
         if not uploaded_file.filename.startswith("~"):
             try:
                 self.s3.upload_fileobj(
                     uploaded_file.file,
-                    os.environ["AWS_BUCKET_NAME"],
-                    f"{str(announcement_id)}/images/{uploaded_file.filename}",
+                    self.AWS_BUCKET_NAME,
+                    f"{id_announcement}/images/{uploaded_file.filename}",
                 )
 
+                return True
             except ClientError as e:
-                raise ClientError("S3 Credentials is not valid")
+                print("S3 Credentials is not valid")
+                return False
             except Exception as e:
-                raise Exception(e)
-        return True
+                print("Error: ", e)
+                return False
+
+    def get_files(self, id_announcement: str) -> List:
+        bucket = self.__get_bucket_data()
+        response = []
+        if bucket:
+            for obj in bucket["Contents"]:
+                if obj["Key"].startswith(f"{id_announcement}/images"):
+                    response.append(
+                        f"https://{self.AWS_BUCKET_NAME}.s3.us-east-1.amazonaws.com/{obj['Key']}"
+                    )
+        return response
+
+    def delete_file(self, id_announcement: str, file_name: str) -> boolean:
+        file_path = f"{id_announcement}/images/{file_name}"
+        try:
+            self.s3.delete_object(Bucket=self.AWS_BUCKET_NAME, Key=file_path)
+            return True
+        except ClientError as e:
+            print("S3 Credentials is not valid")
+            return False
+        except Exception as e:
+            print("Error: ", e)
+            return False
+
+    def __get_bucket_data(self) -> dict:
+        try:
+            response = self.s3.list_objects_v2(
+                Bucket=self.AWS_BUCKET_NAME,
+                EncodingType="url",
+                FetchOwner=True,
+                RequestPayer="requester",
+            )
+            return response
+        except ClientError as e:
+            print("S3 Credentials is not valid")
+            return False
+        except Exception as e:
+            print("Error: ", e)
+            return False
 
     def __calculate_announcement_score(self, announcement: AnnouncementView, filters: list):
         true_items = self.__extract_true_items(announcement)
