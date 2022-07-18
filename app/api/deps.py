@@ -5,6 +5,7 @@ from app.announcement.services.address_service import AddressService
 from app.announcement.services.announcement_service import AnnouncementService
 from app.announcement.services.vacancy_service import VacancyService
 from app.db.database import SessionLocal
+from app.user.services.comment_service import CommentService
 from app.user.services.review_service import ReviewService
 from app.user.services.user_service import UserService
 
@@ -43,5 +44,13 @@ def get_review_service(db: Session = Depends(get_db)):
     return ReviewService(db)
 
 
-def get_user_service(db: Session = Depends(get_db), review_service=Depends(get_review_service)):
-    return UserService(db, review_service=review_service)
+def get_comment_service(db: Session = Depends(get_db)):
+    return CommentService(db)
+
+
+def get_user_service(
+    db: Session = Depends(get_db),
+    review_service=Depends(get_review_service),
+    comment_service=Depends(get_comment_service),
+):
+    return UserService(db, review_service=review_service, comment_service=comment_service)
