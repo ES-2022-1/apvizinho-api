@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import Numeric
 
+from app.announcement.schemas.vacancy import VacancyStatusEnum
 from app.common.models.table_model import TableModel
 from app.db.database import Base
 
@@ -35,5 +36,6 @@ class Vacancy(Base, TableModel):
     required_extroverted_person = Column(Boolean, nullable=False)
     gender = Column(String(50), nullable=True)
     price = Column(Numeric, nullable=False)
+    status = Column(String(50), nullable=False, default=VacancyStatusEnum.EMPTY)
 
     announcement = relationship("Announcement", foreign_keys=id_announcement, lazy="joined")

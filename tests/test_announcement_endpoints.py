@@ -3,9 +3,9 @@ import json
 import pytest
 
 from app.announcement.schemas.announcement import (
+    AnnouncementStatus,
     AnnouncementTagsEnum,
     AnnouncementTypeEnum,
-    StatusEnum,
 )
 
 from .base_client import BaseClient
@@ -91,7 +91,7 @@ def test_create_announcement(make_user, client, session):
         ("allow_events", False),
         ("has_piped_gas", False),
         ("type", AnnouncementTypeEnum.APARTMENT),
-        ("status", StatusEnum.DISABLED),
+        ("status", AnnouncementStatus.DISABLED),
     ],
 )
 def test_update_announcement(announcement, session, client, field, expected_field):

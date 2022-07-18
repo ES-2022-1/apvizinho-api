@@ -3,7 +3,7 @@ import uuid
 import pytest
 from pendulum import date
 
-from app.announcement.schemas.announcement import AnnouncementTypeEnum, StatusEnum
+from app.announcement.schemas.announcement import AnnouncementStatus, AnnouncementTypeEnum
 from app.announcement.schemas.vacancy import GenderEnum
 from app.common import models
 
@@ -79,7 +79,7 @@ def make_announcement(make_user, make_address):
         allow_pet=True,
         allow_events=True,
         has_piped_gas=True,
-        status=StatusEnum.ACTIVE,
+        status=AnnouncementStatus.ACTIVE,
         type=AnnouncementTypeEnum.HOUSE,
     )
 
