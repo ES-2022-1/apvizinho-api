@@ -3,8 +3,6 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from app.user.schemas.user import UserView
-
 
 class CommentBase(BaseModel):
     comment: str
@@ -17,12 +15,11 @@ class CommentBodyPayload(CommentBase):
 
 
 class CommentCreate(CommentBase):
-    id_comment: UUID
+    ...
 
 
 class CommentView(CommentBase):
     id_comment: UUID
-    user: UserView
 
     class Config:
         orm_mode = True
