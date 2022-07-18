@@ -1,4 +1,5 @@
 import json
+from uuid import UUID
 
 import pytest
 
@@ -19,6 +20,12 @@ class AnnouncementClient(BaseClient):
         return self.client.post(
             f"{self.path}/filter", headers=self.headers, json=announcement_filter
         )
+
+    def disable(self, id: UUID):
+        return self.client.patch(f"/{self.path}/{str(id)}/disable", headers=self.headers)
+
+    def enable(self, id: UUID):
+        return self.client.patch(f"/{self.path}/{str(id)}/enable", headers=self.headers)
 
 
 @pytest.fixture
@@ -402,3 +409,24 @@ def test_list_announcements_by_filter_2(make_user, session, client):
         "anuncio 1",
         "anuncio 2",
     ]
+
+
+def test_disable_announcement(announcement, session, client):
+    session.add(announcement)
+    session.commit()
+
+    client.disable(id=announcement.id_announcement)
+    response = client.get_by_id(id=announcement.id_announcement)
+    assert response.status_code == 200
+    assert response.json()["status"] == "DISABLED"
+
+
+def test_enable_announcement(announcement, session, client):
+    session.add(announcement)
+    session.commit()
+
+    client.disable(id=announcement.id_announcement)
+    client.enable(id=announcement.id_announcement)
+    response = client.get_by_id(id=announcement.id_announcement)
+    assert response.status_code == 200
+    assert response.json()["status"] == "ACTIVE"

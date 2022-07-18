@@ -7,6 +7,7 @@ import app.api.deps as deps
 from app.announcement.schemas.announcement import (
     AnnouncementCreateBodyPayload,
     AnnouncementFilter,
+    AnnouncementStatus,
     AnnouncementUpdate,
     AnnouncementView,
 )
@@ -64,3 +65,21 @@ def list_announcements_by_filter(
     service: AnnouncementService = Depends(deps.get_announcement_service),
 ):
     return service.filter(announcement_filter)
+
+
+@router.patch("/{id_announcement}/disable", response_model=AnnouncementView)
+def disable(
+    id_announcement: UUID,
+    service: AnnouncementService = Depends(deps.get_announcement_service),
+):
+    announcement_update = AnnouncementUpdate(status=AnnouncementStatus.DISABLED)
+    return service.update(update=announcement_update, id_announcement=id_announcement)
+
+
+@router.patch("/{id_announcement}/enable", response_model=AnnouncementView)
+def enable(
+    id_announcement: UUID,
+    service: AnnouncementService = Depends(deps.get_announcement_service),
+):
+    announcement_update = AnnouncementUpdate(status=AnnouncementStatus.ACTIVE)
+    return service.update(update=announcement_update, id_announcement=id_announcement)
