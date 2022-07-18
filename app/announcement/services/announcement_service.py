@@ -138,6 +138,6 @@ class AnnouncementService(
             (AnnouncementTagsEnum.FEMALE_GENDER in filters)
             and (AnnouncementTagsEnum.FEMALE_GENDER not in matched)
         ):
-            match_score = match_score/2
+            match_score = match_score / 2
 
         return matched, match_score
