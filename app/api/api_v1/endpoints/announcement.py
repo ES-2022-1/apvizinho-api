@@ -1,7 +1,8 @@
 from typing import List
 from uuid import UUID
+import uuid
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 
 import app.api.deps as deps
 from app.announcement.schemas.announcement import (
@@ -64,3 +65,12 @@ def list_announcements_by_filter(
     service: AnnouncementService = Depends(deps.get_announcement_service),
 ):
     return service.filter(announcement_filter)
+
+
+@router.post("/upload")
+def upload_announcement_images(
+    announcement_id: UUID,
+    file: UploadFile = File(...),
+    service: AnnouncementService = Depends(deps.get_announcement_service),
+):
+    return service.save_file(announcement_id=announcement_id, uploaded_file=file)

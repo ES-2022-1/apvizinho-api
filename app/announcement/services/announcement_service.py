@@ -1,8 +1,14 @@
-from typing import List
+from mimetypes import MimeTypes
+from typing import Any, List
+from uuid import UUID
+import uuid
 
 from haversine import haversine
 from sqlalchemy.orm import Session
-
+import boto3
+import os
+from botocore.exceptions import ClientError
+from fastapi import UploadFile
 from app.announcement.repositories.announcement_repository import AnnouncementRepository
 from app.announcement.schemas import (
     AnnouncementCreateBodyPayload,
@@ -33,6 +39,7 @@ class AnnouncementService(
         )
         self.vacancy_service = vacancy_service
         self.address_service = address_service
+        self.s3 = boto3.client("s3")
 
     def create(self, create: AnnouncementCreateBodyPayload) -> AnnouncementView:
         address = self.address_service.create(create.address)
@@ -66,6 +73,21 @@ class AnnouncementService(
         announcements = list(ranked_announcements.keys())
 
         return announcements
+
+    def save_file(self, announcement_id: UUID, uploaded_file: UploadFile) -> Any:
+        if not uploaded_file.filename.startswith("~"):
+            try:
+                self.s3.upload_fileobj(
+                    uploaded_file.file,
+                    os.environ["AWS_BUCKET_NAME"],
+                    f"{str(announcement_id)}/images/{uploaded_file.filename}",
+                )
+
+            except ClientError as e:
+                raise ClientError("S3 Credentials is not valid")
+            except Exception as e:
+                raise Exception(e)
+        return True
 
     def __calculate_announcement_score(self, announcement: AnnouncementView, filters: list):
         true_items = self.__extract_true_items(announcement)
