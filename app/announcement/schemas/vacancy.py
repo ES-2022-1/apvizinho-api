@@ -36,6 +36,7 @@ class VacancyCreate(VacancyBase):
 class VacancyView(VacancyBase):
     id_vacancy: UUID
     id_announcement: UUID
+    status: VacancyStatusEnum
 
     class Config:
         orm_mode = True

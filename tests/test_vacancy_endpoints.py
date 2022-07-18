@@ -1,4 +1,5 @@
 import json
+from uuid import UUID
 
 import pytest
 
@@ -10,6 +11,12 @@ from .base_client import BaseClient
 class VacancyClient(BaseClient):
     def __init__(self, client):
         super().__init__(client, endpoint_path="vacancy")
+
+    def fullfill(self, id: UUID):
+        return self.client.patch(f"/{self.path}/{str(id)}/fullfill", headers=self.headers)
+
+    def empty(self, id: UUID):
+        return self.client.patch(f"/{self.path}/{str(id)}/empty", headers=self.headers)
 
 
 @pytest.fixture
@@ -97,3 +104,24 @@ def test_list_vacancys(vacancy, session, client):
 
     assert response.status_code == 200
     assert len(response.json()) == 1
+
+
+def test_fullfill_vacancy(vacancy, session, client):
+    session.add(vacancy)
+    session.commit()
+
+    client.fullfill(id=vacancy.id_vacancy)
+    response = client.get_by_id(id=vacancy.id_vacancy)
+    assert response.status_code == 200
+    assert response.json()["status"] == "FULLFILLED"
+
+
+def test_empty_vacancy(vacancy, session, client):
+    session.add(vacancy)
+    session.commit()
+
+    client.fullfill(id=vacancy.id_vacancy)
+    client.empty(id=vacancy.id_vacancy)
+    response = client.get_by_id(id=vacancy.id_vacancy)
+    assert response.status_code == 200
+    assert response.json()["status"] == "EMPTY"
