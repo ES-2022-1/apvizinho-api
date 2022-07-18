@@ -8,7 +8,7 @@ from app.announcement.schemas.address import AddressCreate, AddressView
 from app.announcement.schemas.vacancy import VacancyBase, VacancyView
 
 
-class StatusEnum(str, Enum):
+class AnnouncementStatus(str, Enum):
     ACTIVE = "ACTIVE"
     DISABLED = "DISABLED"
 
@@ -46,7 +46,6 @@ class AnnouncementBase(BaseModel):
     allow_pet: bool
     allow_events: bool
     has_piped_gas: bool
-    status: StatusEnum = StatusEnum.ACTIVE
     type: AnnouncementTypeEnum
 
 
@@ -67,6 +66,7 @@ class AnnouncementView(AnnouncementBase):
     id_address: UUID
     vacancies: List[VacancyView]
     address: AddressView
+    status: AnnouncementStatus
 
     class Config:
         orm_mode = True
@@ -83,7 +83,7 @@ class AnnouncementUpdate(BaseModel):
     allow_events: Optional[bool]
     has_piped_gas: Optional[bool]
     type: Optional[AnnouncementTypeEnum]
-    status: Optional[StatusEnum]
+    status: Optional[AnnouncementStatus]
 
 
 class AnnouncementFilter(BaseModel):

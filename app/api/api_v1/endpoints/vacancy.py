@@ -4,7 +4,12 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 
 import app.api.deps as deps
-from app.announcement.schemas.vacancy import VacancyCreate, VacancyUpdate, VacancyView
+from app.announcement.schemas.vacancy import (
+    VacancyCreate,
+    VacancyStatusEnum,
+    VacancyUpdate,
+    VacancyView,
+)
 from app.announcement.services.vacancy_service import VacancyService
 from app.common.exceptions import RecordNotFoundException, RecordNotFoundHTTPException
 
@@ -48,3 +53,15 @@ def update_vacancy(
     service: VacancyService = Depends(deps.get_vacancy_service),
 ):
     return service.update(update=vacancy_update, id_vacancy=id_vacancy)
+
+
+@router.patch("/{id_vancancy}/fullfill", response_model=VacancyView)
+def fullfill(id_vancancy: UUID, service: VacancyService = Depends(deps.get_vacancy_service)):
+    vacancy_update = VacancyUpdate(status=VacancyStatusEnum.FULLFILLED)
+    return service.update(update=vacancy_update, id_vacancy=id_vancancy)
+
+
+@router.patch("/{id_vancancy}/empty", response_model=VacancyView)
+def empty(id_vancancy: UUID, service: VacancyService = Depends(deps.get_vacancy_service)):
+    vacancy_update = VacancyUpdate(status=VacancyStatusEnum.EMPTY)
+    return service.update(update=vacancy_update, id_vacancy=id_vancancy)
