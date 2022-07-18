@@ -399,6 +399,6 @@ def test_list_announcements_by_filter_2(make_user, session, client):
     assert response.status_code == 200
     assert list(map(lambda x: x["title"], response.json())) == [
         "anuncio 3",
-        "anuncio 2",
         "anuncio 1",
+        "anuncio 2",
     ]
