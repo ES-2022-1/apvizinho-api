@@ -18,6 +18,24 @@ class AnnouncementTypeEnum(str, Enum):
     APARTMENT = "APARTMENT"
 
 
+class AnnouncementTagsEnum(str, Enum):
+    ALLOW_EVENTS = "ALLOW_EVENTS"
+    ALLOW_PETS = "ALLOW_PETS"
+    HAS_FURNITURE = "HAS_FURNITURE"
+    HAS_INTERNET = "HAS_INTERNET"
+    HAS_PIPED_GAS = "HAS_PIPED_GAS"
+    IS_CLOSE_TO_SUPERMARKET = "IS_CLOSE_TO_SUPERMARKET"
+    IS_CLOSE_TO_UNIVERSITY = "IS_CLOSE_TO_UNIVERSITY"
+    ALLOWED_SMOKER = "ALLOWED_SMOKER"
+    HAS_BATHROOM = "HAS_BATHROOM"
+    HAS_CABLE_INTERNET = "HAS_CABLE_INTERNET"
+    IS_SHARED_ROOM = "IS_SHARED_ROOM"
+    REQUIRED_EXTROVERTED_PERSON = "REQUIRED_EXTROVERTED_PERSON"
+    REQUIRED_ORGANIZED_PERSON = "REQUIRED_ORGANIZED_PERSON"
+    FEMALE_GENDER = "FEMALE_GENDER"
+    MALE_GENDER = "MALE_GENDER"
+
+
 class AnnouncementBase(BaseModel):
     title: str
     description: str
@@ -66,3 +84,7 @@ class AnnouncementUpdate(BaseModel):
     has_piped_gas: Optional[bool]
     type: Optional[AnnouncementTypeEnum]
     status: Optional[StatusEnum]
+
+
+class AnnouncementFilter(BaseModel):
+    filters: List[AnnouncementTagsEnum]
