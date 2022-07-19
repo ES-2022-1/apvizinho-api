@@ -67,6 +67,7 @@ class AnnouncementView(AnnouncementBase):
     id_address: UUID
     vacancies: List[VacancyView]
     address: AddressView
+    images_url: Optional[List[str]] = None
 
     class Config:
         orm_mode = True
