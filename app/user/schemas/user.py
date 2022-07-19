@@ -2,15 +2,23 @@ from datetime import date
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+email_field = Field(
+    regex="([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+([A-Z|a-z]{2,})+"
+)  # noqa: W605
+
+cellphone_field = Field(min_length=11, max_length=11)
+
+document_field = Field(min_length=11, max_length=11)
 
 
 class UserBase(BaseModel):
     firstname: str
     surname: str
-    email: str
-    cellphone: str
-    document: str
+    email: str = email_field
+    cellphone: str = cellphone_field
+    document: str = document_field
     birthdate: date
 
 
@@ -39,8 +47,8 @@ class UserView(BaseModel):
 class UserUpdate(BaseModel):
     firstname: Optional[str]
     surname: Optional[str]
-    email: Optional[str]
-    cellphone: Optional[str]
+    email: Optional[str] = email_field
+    cellphone: Optional[str] = cellphone_field
     birthdate: Optional[date]
-    document: Optional[str]
+    document: Optional[str] = document_field
     already_reviewed: Optional[bool]

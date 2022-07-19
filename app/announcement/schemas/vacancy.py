@@ -11,6 +11,11 @@ class GenderEnum(str, Enum):
     UNKNOWN = "UNKNOWN"
 
 
+class VacancyStatusEnum(str, Enum):
+    FULLFILLED = "FULLFILLED"
+    EMPTY = "EMPTY"
+
+
 class VacancyBase(BaseModel):
     has_bathroom: bool
     has_garage: bool
@@ -31,6 +36,7 @@ class VacancyCreate(VacancyBase):
 class VacancyView(VacancyBase):
     id_vacancy: UUID
     id_announcement: UUID
+    status: VacancyStatusEnum
 
     class Config:
         orm_mode = True
@@ -47,3 +53,4 @@ class VacancyUpdate(BaseModel):
     required_extroverted_person: Optional[bool]
     gender: Optional[str]
     price: Optional[float]
+    status: Optional[VacancyStatusEnum]

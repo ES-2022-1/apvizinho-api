@@ -35,7 +35,7 @@ docker-alembic-upgrade:
 	docker compose run --rm server alembic upgrade head
 
 docker-alembic-downgrade:
-	docker compose run --rm server alembic downgrade base
+	docker compose run --rm server alembic downgrade $(local)
 
 
 lint:

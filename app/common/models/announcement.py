@@ -3,6 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 
+from app.announcement.schemas.announcement import AnnouncementStatus
 from app.common.models.table_model import TableModel
 from app.db.database import Base
 
@@ -38,7 +39,7 @@ class Announcement(Base, TableModel):
     allow_events = Column(Boolean, nullable=False)
     has_piped_gas = Column(Boolean, nullable=False)
     type = Column(String(50), nullable=False)
-    status = Column(String(50), nullable=False)
+    status = Column(String(50), nullable=False, default=AnnouncementStatus.ACTIVE)
 
     address = relationship("Address", foreign_keys=id_address, lazy="joined")
 
