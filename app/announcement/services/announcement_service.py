@@ -41,9 +41,7 @@ class AnnouncementService(
         self.address_service = address_service
         self.s3 = boto3.client("s3")
 
-    def create(
-        self, create: AnnouncementCreateBodyPayload, uploaded_files: List[UploadFile]
-    ) -> AnnouncementView:
+    def create(self, create: AnnouncementCreateBodyPayload) -> AnnouncementView:
         address = self.address_service.create(create.address)
 
         announcement_create = AnnouncementCreate(**create.dict(), id_address=address.id_address)
