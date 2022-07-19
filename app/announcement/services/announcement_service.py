@@ -21,7 +21,7 @@ from app.announcement.schemas.announcement import (
 from app.announcement.schemas.vacancy import GenderEnum, VacancyCreate
 from app.announcement.services.address_service import AddressService
 from app.announcement.services.vacancy_service import VacancyService
-from app.common.exceptions import RecordNotFoundException
+from app.common.exceptions import AWSConfigException, RecordNotFoundException
 from app.common.services.base import BaseService
 from app.common.utils.constants import RADIUS, UFCG_COORDINATES
 from app.core.settings import AWS_BUCKET_NAME
@@ -74,7 +74,7 @@ class AnnouncementService(
 
         return announcements
 
-    def save_file(self, id_announcement: UUID, uploaded_file: UploadFile) -> bool:
+    def save_file(self, id_announcement: UUID, uploaded_file: UploadFile) -> str:
         if not self.get_by_id(id_announcement=id_announcement):
             raise RecordNotFoundException()
         if not uploaded_file.filename.startswith("~"):
@@ -88,14 +88,11 @@ class AnnouncementService(
                 )
                 return f"https://{AWS_BUCKET_NAME}.s3.us-east-1.amazonaws.com/{file_path}"
             except ClientError as e:
-                print("S3 Credentials is not valid")
-                return False
-                print(e)
-            except Exception as e:
-                print("Error: ", e)
-                return False
+                raise AWSConfigException(detail=e.msg)
 
-    def save_multiple_files(self, id_announcement: UUID, uploaded_files: List[UploadFile]) -> bool:
+    def save_multiple_files(
+        self, id_announcement: UUID, uploaded_files: List[UploadFile]
+    ) -> List[str]:
         return [self.save_file(id_announcement, uploaded_file) for uploaded_file in uploaded_files]
 
     def get_files(self, id_announcement: UUID) -> List:
@@ -111,19 +108,14 @@ class AnnouncementService(
                     )
         return response
 
-    def delete_file(self, id_announcement: UUID, file_name: str) -> bool:
+    def delete_file(self, id_announcement: UUID, file_name: str):
         if not self.get_by_id(id_announcement=id_announcement):
             raise RecordNotFoundException()
         file_path = f"{str(id_announcement)}/images/{file_name}"
         try:
             self.s3.delete_object(Bucket=AWS_BUCKET_NAME, Key=file_path)
-            return True
         except ClientError as e:
-            print("S3 Credentials is not valid")
-            print(e)
-        except Exception as e:
-            print("Error: ", e)
-            return False
+            raise AWSConfigException(detail=e.msg)
 
     def __get_bucket_data(self) -> dict:
         try:
@@ -135,11 +127,7 @@ class AnnouncementService(
             )
             return response
         except ClientError as e:
-            print("S3 Credentials is not valid")
-            print(e)
-        except Exception as e:
-            print("Error: ", e)
-            print(e)
+            raise AWSConfigException(detail=e.msg)
 
     def __calculate_announcement_score(self, announcement: AnnouncementView, filters: list):
         true_items = self.__extract_true_items(announcement)
