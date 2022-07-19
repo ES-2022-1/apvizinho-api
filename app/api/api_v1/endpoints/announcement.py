@@ -1,8 +1,7 @@
-from typing import List, Optional
+from typing import List
 from uuid import UUID
-import uuid
 
-from fastapi import APIRouter, Depends, File, Form, UploadFile
+from fastapi import APIRouter, Depends, File, UploadFile
 
 import app.api.deps as deps
 from app.announcement.schemas.announcement import (

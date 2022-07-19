@@ -1,4 +1,3 @@
-from mimetypes import MimeTypes
 from typing import List
 from uuid import UUID, uuid4
 from xmlrpc.client import boolean
@@ -6,7 +5,6 @@ from xmlrpc.client import boolean
 from haversine import haversine
 from sqlalchemy.orm import Session
 import boto3
-import os
 from botocore.exceptions import ClientError
 from fastapi import UploadFile
 from app.announcement.repositories.announcement_repository import AnnouncementRepository
@@ -94,6 +92,7 @@ class AnnouncementService(
             except ClientError as e:
                 print("S3 Credentials is not valid")
                 return False
+                print(e)
             except Exception as e:
                 print("Error: ", e)
                 return False
@@ -126,7 +125,6 @@ class AnnouncementService(
         except ClientError as e:
             print("S3 Credentials is not valid")
             print(e)
-            return False
         except Exception as e:
             print("Error: ", e)
             return False
@@ -142,10 +140,10 @@ class AnnouncementService(
             return response
         except ClientError as e:
             print("S3 Credentials is not valid")
-            return False
+            print(e)
         except Exception as e:
             print("Error: ", e)
-            return False
+            print(e)
 
     def __calculate_announcement_score(self, announcement: AnnouncementView, filters: list):
         true_items = self.__extract_true_items(announcement)
