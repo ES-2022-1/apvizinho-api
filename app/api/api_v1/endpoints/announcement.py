@@ -67,6 +67,7 @@ def list_announcements_by_filter(
 ):
     return service.filter(announcement_filter)
 
+
 @router.post("/{id_announcement}/upload")
 def upload_announcement_images(
     id_announcement: UUID,
@@ -100,6 +101,7 @@ def delete_announcement_image(
         return service.delete_file(id_announcement=id_announcement, file_name=file_name)
     except RecordNotFoundException:
         raise RecordNotFoundHTTPException(detail="Announcement not found")
+
 
 @router.patch("/{id_announcement}/disable", response_model=AnnouncementView)
 def disable(

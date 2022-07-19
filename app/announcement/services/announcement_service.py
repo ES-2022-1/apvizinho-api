@@ -2,11 +2,12 @@ from typing import List
 from uuid import UUID, uuid4
 from xmlrpc.client import boolean
 
-from haversine import haversine
-from sqlalchemy.orm import Session
 import boto3
 from botocore.exceptions import ClientError
 from fastapi import UploadFile
+from haversine import haversine
+from sqlalchemy.orm import Session
+
 from app.announcement.repositories.announcement_repository import AnnouncementRepository
 from app.announcement.schemas import (
     AnnouncementCreateBodyPayload,
@@ -21,9 +22,9 @@ from app.announcement.schemas.announcement import (
 from app.announcement.schemas.vacancy import GenderEnum, VacancyCreate
 from app.announcement.services.address_service import AddressService
 from app.announcement.services.vacancy_service import VacancyService
+from app.common.exceptions import RecordNotFoundException
 from app.common.services.base import BaseService
 from app.common.utils.constants import RADIUS, UFCG_COORDINATES
-from app.common.exceptions import RecordNotFoundException
 from app.core.settings import AWS_BUCKET_NAME
 
 
