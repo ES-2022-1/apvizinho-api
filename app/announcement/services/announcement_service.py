@@ -1,6 +1,5 @@
 from typing import List
 from uuid import UUID, uuid4
-from xmlrpc.client import boolean
 
 import boto3
 from botocore.exceptions import ClientError
@@ -75,7 +74,7 @@ class AnnouncementService(
 
         return announcements
 
-    def save_file(self, id_announcement: UUID, uploaded_file: UploadFile) -> boolean:
+    def save_file(self, id_announcement: UUID, uploaded_file: UploadFile) -> bool:
         if not self.get_by_id(id_announcement=id_announcement):
             raise RecordNotFoundException()
         if not uploaded_file.filename.startswith("~"):
@@ -96,9 +95,7 @@ class AnnouncementService(
                 print("Error: ", e)
                 return False
 
-    def save_multiple_files(
-        self, id_announcement: UUID, uploaded_files: List[UploadFile]
-    ) -> boolean:
+    def save_multiple_files(self, id_announcement: UUID, uploaded_files: List[UploadFile]) -> bool:
         return [self.save_file(id_announcement, uploaded_file) for uploaded_file in uploaded_files]
 
     def get_files(self, id_announcement: UUID) -> List:
@@ -114,7 +111,7 @@ class AnnouncementService(
                     )
         return response
 
-    def delete_file(self, id_announcement: UUID, file_name: str) -> boolean:
+    def delete_file(self, id_announcement: UUID, file_name: str) -> bool:
         if not self.get_by_id(id_announcement=id_announcement):
             raise RecordNotFoundException()
         file_path = f"{str(id_announcement)}/images/{file_name}"
