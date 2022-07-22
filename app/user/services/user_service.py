@@ -2,6 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
+from app.common.models import Users
 from app.common.services.base import BaseService
 from app.common.utils import password as password_utils
 from app.user.exceptions import UserAlreadyReviewedException
@@ -53,3 +54,9 @@ class UserService(BaseService[UserCreate, UserUpdate, UserView]):
             id_user_writer=comment_body_payload.id_user_writer,
         )
         return self.commment_service.create(comment_create)
+
+    def get_user_by_email(self, email: str) -> Users:
+        user_repository: UserRepository = self.repository
+
+        user = user_repository.get_user_by_email(email=email)
+        return user

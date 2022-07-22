@@ -19,20 +19,34 @@ def create_user(user_create: UserCreate, service: UserService = Depends(deps.get
     return service.create(create=user_create)
 
 
-@router.get("/", response_model=List[UserView])
+@router.get(
+    "/",
+    response_model=List[UserView],
+    dependencies=[Depends(deps.hass_access)],
+)
 def get_all_users(service: UserService = Depends(deps.get_user_service)):
     return service.get_all()
 
 
-@router.get("/{id_user}", response_model=UserView)
-def get_users_by_id(id_user: UUID, service: UserService = Depends(deps.get_user_service)):
+@router.get(
+    "/{id_user}",
+    response_model=UserView,
+    dependencies=[Depends(deps.hass_access)],
+)
+def get_users_by_id(
+    id_user: UUID,
+    service: UserService = Depends(deps.get_user_service),
+):
     try:
         return service.get_by_id(id_user=id_user)
     except RecordNotFoundException:
         raise RecordNotFoundHTTPException(detail="User not found")
 
 
-@router.delete("/{id_user}")
+@router.delete(
+    "/{id_user}",
+    dependencies=[Depends(deps.hass_access)],
+)
 def delete_user(id_user: UUID, service: UserService = Depends(deps.get_user_service)):
     try:
         service.delete(id_user=id_user)
@@ -40,7 +54,11 @@ def delete_user(id_user: UUID, service: UserService = Depends(deps.get_user_serv
         raise RecordNotFoundHTTPException(detail="User not found")
 
 
-@router.put("/{id_user}", response_model=UserView)
+@router.put(
+    "/{id_user}",
+    response_model=UserView,
+    dependencies=[Depends(deps.hass_access)],
+)
 def update_user(
     user_update: UserUpdate,
     id_user: UUID,
@@ -49,7 +67,11 @@ def update_user(
     return service.update(update=user_update, id_user=id_user)
 
 
-@router.post("/{id_user}/review", response_model=ReviewView)
+@router.post(
+    "/{id_user}/review",
+    response_model=ReviewView,
+    dependencies=[Depends(deps.hass_access)],
+)
 def review_system(
     review_create: ReviewBodyPayload,
     id_user: UUID,
@@ -61,7 +83,11 @@ def review_system(
         raise UserAlreadyReviewedHTTPException
 
 
-@router.post("/{id_user_commented}/{id_user_writer}/profileComment", response_model=CommentView)
+@router.post(
+    "/{id_user_commented}/{id_user_writer}/profileComment",
+    response_model=CommentView,
+    dependencies=[Depends(deps.hass_access)],
+)
 def comment_system(
     comment_create: CommentBodyPayload,
     service: UserService = Depends(deps.get_user_service),
@@ -71,21 +97,15 @@ def comment_system(
     )
 
 
-@router.get("/{id_user}/profileComment", response_model=CommentView)
+@router.get(
+    "/{id_user}/profileComment",
+    response_model=CommentView,
+    dependencies=[Depends(deps.hass_access)],
+)
 def get_comment_in_profile(
-    #  try:
-    #     return service.
     comment_create: CommentBodyPayload,
     service: UserService = Depends(deps.get_user_service),
 ):
     return service.profile_comment(
         comment_body_payload=comment_create,
     )
-
-
-# @router.get("/{id_user}", response_model=UserView)
-# def get_users_by_id(id_user: UUID, service: UserService = Depends(deps.get_user_service)):
-#    try:
-#        return service.get_by_id(id_user=id_user)
-#    except RecordNotFoundException:
-#        raise RecordNotFoundHTTPException(detail="User not found")

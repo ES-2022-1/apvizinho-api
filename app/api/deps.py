@@ -1,9 +1,12 @@
 from fastapi import Depends
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 from app.announcement.services.address_service import AddressService
 from app.announcement.services.announcement_service import AnnouncementService
 from app.announcement.services.vacancy_service import VacancyService
+from app.auth.services.auth_service import AuthService
+from app.common.exceptions import AuthExceptionHTTPException
 from app.db.database import SessionLocal
 from app.user.services.comment_service import CommentService
 from app.user.services.review_service import ReviewService
@@ -54,3 +57,28 @@ def get_user_service(
     comment_service=Depends(get_comment_service),
 ):
     return UserService(db, review_service=review_service, comment_service=comment_service)
+
+
+def get_auth_service(user_service: UserService = Depends(get_user_service)):
+    return AuthService(user_service=user_service)
+
+
+security = HTTPBearer()
+
+
+def hass_access(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    auth_service: AuthService = Depends(get_auth_service),
+):
+    if credentials:
+        if not credentials.scheme == "Bearer":
+            raise AuthExceptionHTTPException(
+                status_code=403, detail="Invalid authentication scheme."
+            )
+        if not auth_service.auth(token=credentials.credentials):
+            raise AuthExceptionHTTPException(
+                status_code=403, detail="Invalid token or expired token."
+            )
+        return credentials.credentials
+    else:
+        raise AuthExceptionHTTPException(status_code=403, detail="Invalid authorization code.")
