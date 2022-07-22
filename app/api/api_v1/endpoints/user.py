@@ -4,6 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 
 import app.api.deps as deps
+from app.auth.middleware.JWTBearer import JWTBearer
 from app.common.exceptions import RecordNotFoundException, RecordNotFoundHTTPException
 from app.user.exceptions import UserAlreadyReviewedException, UserAlreadyReviewedHTTPException
 from app.user.schemas import CommentView, ReviewView, UserCreate, UserUpdate, UserView
@@ -24,8 +25,15 @@ def get_all_users(service: UserService = Depends(deps.get_user_service)):
     return service.get_all()
 
 
-@router.get("/{id_user}", response_model=UserView)
-def get_users_by_id(id_user: UUID, service: UserService = Depends(deps.get_user_service)):
+@router.get(
+    "/{id_user}",
+    response_model=UserView,
+    dependencies=[Depends(JWTBearer(auth_service=deps.get_auth_service()))],
+)
+def get_users_by_id(
+    id_user: UUID,
+    service: UserService = Depends(deps.get_user_service),
+):
     try:
         return service.get_by_id(id_user=id_user)
     except RecordNotFoundException:
