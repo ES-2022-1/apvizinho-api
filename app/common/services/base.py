@@ -23,6 +23,9 @@ class BaseService(Generic[CREATE, UPDATE, RETURN]):
     def get_by_id(self, **kwargs) -> RETURN:
         return self.repository.get_by_id(**kwargs)
 
+    def get_comment_in_profile(self, **kwargs) -> RETURN:
+        return self.repository
+
     def get_all(self) -> List[RETURN]:
         return self.repository.get_all()
 

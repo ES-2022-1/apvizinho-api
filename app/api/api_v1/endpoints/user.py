@@ -6,7 +6,8 @@ from fastapi import APIRouter, Depends
 import app.api.deps as deps
 from app.common.exceptions import RecordNotFoundException, RecordNotFoundHTTPException
 from app.user.exceptions import UserAlreadyReviewedException, UserAlreadyReviewedHTTPException
-from app.user.schemas import ReviewView, UserCreate, UserUpdate, UserView
+from app.user.schemas import CommentView, ReviewView, UserCreate, UserUpdate, UserView
+from app.user.schemas.comment import CommentBodyPayload
 from app.user.schemas.review import ReviewBodyPayload
 from app.user.services.user_service import UserService
 
@@ -58,3 +59,33 @@ def review_system(
         return service.review(id_user=id_user, review_body_payload=review_create)
     except UserAlreadyReviewedException:
         raise UserAlreadyReviewedHTTPException
+
+
+@router.post("/{id_user_commented}/{id_user_writer}/profileComment", response_model=CommentView)
+def comment_system(
+    comment_create: CommentBodyPayload,
+    service: UserService = Depends(deps.get_user_service),
+):
+    return service.profile_comment(
+        comment_body_payload=comment_create,
+    )
+
+
+@router.get("/{id_user}/profileComment", response_model=CommentView)
+def get_comment_in_profile(
+    #  try:
+    #     return service.
+    comment_create: CommentBodyPayload,
+    service: UserService = Depends(deps.get_user_service),
+):
+    return service.profile_comment(
+        comment_body_payload=comment_create,
+    )
+
+
+# @router.get("/{id_user}", response_model=UserView)
+# def get_users_by_id(id_user: UUID, service: UserService = Depends(deps.get_user_service)):
+#    try:
+#        return service.get_by_id(id_user=id_user)
+#    except RecordNotFoundException:
+#        raise RecordNotFoundHTTPException(detail="User not found")

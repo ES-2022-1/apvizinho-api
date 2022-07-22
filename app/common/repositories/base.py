@@ -54,6 +54,9 @@ class BaseRepository(Generic[T, ID]):
     def default_query(self) -> Optional[BaseFinder]:
         return self.db.query(self.model_class).filter(self.model_class.deleted_at.is_(None))
 
+    # @property
+    # def comment_query(self) -> Optional[BaseFinder]:
+    # return self.db.query(self.model_class).filter(self.model_class.)
     @property
     def finder(self):
         return self._finder
@@ -76,6 +79,9 @@ class BaseRepository(Generic[T, ID]):
         if not model:
             raise RecordNotFoundException()
         return model
+
+    #    def get_comments_in_profile(self, **kwargs) -> T:
+    #        model = self.defult_query.filter(*self)
 
     def add(self, create_schema: pydantic.BaseModel) -> T:
         created_model = self.model_class(**create_schema.dict())
