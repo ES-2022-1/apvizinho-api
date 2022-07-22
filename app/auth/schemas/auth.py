@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, Field
 
 email_field = Field(
@@ -13,3 +15,11 @@ class SessionCreate(BaseModel):
 class Tokens(BaseModel):
     access_token: str
     refresh_token: str
+
+
+class TokenPayload(BaseModel):
+    exp: datetime
+    sub: str
+    email: str = email_field
+    id_user: str
+    name: str

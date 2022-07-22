@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from jose import jwt
 
-from app.auth.schemas.auth import SessionCreate, Tokens
+from app.auth.schemas.auth import SessionCreate, TokenPayload, Tokens
 from app.common.exceptions import AuthException
 from app.common.models.users import Users
 from app.common.utils.password import check_password
@@ -33,13 +33,14 @@ class AuthService:
     def create_access_token(self, session_create: SessionCreate, user: Users) -> str:
         expires_delta = datetime.utcnow() + timedelta(minutes=self.ACCESS_TOKEN_EXPIRE_MINUTES)
 
-        to_encode = {
-            "exp": expires_delta,
-            "sub": str(user.id_user),
-            "id_user": str(user.id_user),
-            "email": user.email,
-            "name": f"{user.firstname} {user.surname}",
-        }
+        to_encode = TokenPayload(
+            exp=expires_delta,
+            sub=str(user.id_user),
+            id_user=str(user.id_user),
+            email=user.email,
+            name=f"{user.firstname} {user.surname}",
+        ).dict()
+
         encoded_jwt = jwt.encode(to_encode, self.JWT_SECRET_KEY, self.ALGORITHM)
 
         return encoded_jwt
@@ -47,13 +48,13 @@ class AuthService:
     def create_refresh_token(self, session_create: SessionCreate, user: Users) -> str:
         expires_delta = datetime.utcnow() + timedelta(minutes=self.ACCESS_TOKEN_EXPIRE_MINUTES)
 
-        to_encode = {
-            "exp": expires_delta,
-            "sub": str(user.id_user),
-            "id_user": str(user.id_user),
-            "email": user.email,
-            "name": f"{user.firstname} {user.surname}",
-        }
+        to_encode = TokenPayload(
+            exp=expires_delta,
+            sub=str(user.id_user),
+            id_user=str(user.id_user),
+            email=user.email,
+            name=f"{user.firstname} {user.surname}",
+        ).dict()
 
         encoded_jwt = jwt.encode(to_encode, self.JWT_REFRESH_SECRET_KEY, self.ALGORITHM)
 
