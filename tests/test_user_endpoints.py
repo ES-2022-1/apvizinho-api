@@ -12,6 +12,13 @@ class UserClient(BaseClient):
     def review(self, id_user, data):
         return self.client.post(f"/{self.path}/{id_user}/review", data=data, headers=self.headers)
 
+    def comment(self, id_user_commented, id_user_writer, data):
+        return self.client.post(
+            f"/{self.path}/{id_user_commented}/{id_user_writer}/profileComment",
+            data=data,
+            headers=self.headers,
+        )
+
 
 @pytest.fixture
 def user_client(client):
@@ -20,6 +27,11 @@ def user_client(client):
 
 @pytest.fixture
 def user(make_user):
+    return make_user()
+
+
+@pytest.fixture
+def user2(make_user):
     return make_user()
 
 
@@ -65,6 +77,38 @@ def test_update_user(user, session, user_client, field, expected_field):
     response = user_client.update(id=user.id_user, update=json.dumps(data))
     assert response.status_code == 200
     assert response.json()[field] == expected_field
+
+
+def test_create_user_second_user(user_client):
+    data = {
+        "firstname": "Todoroki",
+        "surname": "Shoto",
+        "email": "sato-todo@email.com.br",
+        "cellphone": "99999998999",
+        "document": "99994999999",
+        "birthdate": "2007-01-11",
+        "password": "SEGREDO!",
+    }
+
+    response = user_client.create(json.dumps(data))
+
+    assert response.status_code == 200
+    assert response.json()["firstname"] == "Todoroki"
+
+
+def test_comment(user, user2, session, user_client):
+    session.add(user)
+    session.add(user2)
+    session.commit()
+
+    data = {
+        "comment": "não façam acordo ele é tiktoker",
+        "id_user_commented": user.id_user,
+        "id_user_writer": user2.id_user,
+    }
+    response = user_client.comment(user.id_user, user2.id_user, json.dumps(data))
+    assert response.status_code == 200
+    assert response.json()["comment"] == "não façam acordo ele é tiktoker"
 
 
 def test_delete_user(user, session, user_client):
