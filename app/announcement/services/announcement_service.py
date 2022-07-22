@@ -1,5 +1,9 @@
 from typing import List
+from uuid import UUID, uuid4
 
+import boto3
+from botocore.exceptions import ClientError
+from fastapi import UploadFile
 from haversine import haversine
 from sqlalchemy.orm import Session
 
@@ -17,8 +21,10 @@ from app.announcement.schemas.announcement import (
 from app.announcement.schemas.vacancy import GenderEnum, VacancyCreate
 from app.announcement.services.address_service import AddressService
 from app.announcement.services.vacancy_service import VacancyService
+from app.common.exceptions import AWSConfigException, RecordNotFoundException
 from app.common.services.base import BaseService
 from app.common.utils.constants import RADIUS, UFCG_COORDINATES
+from app.core.settings import AWS_BUCKET_NAME
 
 
 class AnnouncementService(
@@ -33,6 +39,7 @@ class AnnouncementService(
         )
         self.vacancy_service = vacancy_service
         self.address_service = address_service
+        self.s3 = boto3.client("s3")
 
     def create(self, create: AnnouncementCreateBodyPayload) -> AnnouncementView:
         address = self.address_service.create(create.address)
@@ -66,6 +73,61 @@ class AnnouncementService(
         announcements = list(ranked_announcements.keys())
 
         return announcements
+
+    def save_file(self, id_announcement: UUID, uploaded_file: UploadFile) -> str:
+        if not self.get_by_id(id_announcement=id_announcement):
+            raise RecordNotFoundException()
+        if not uploaded_file.filename.startswith("~"):
+            try:
+                file_name = uuid4().hex + ".jpg"
+                file_path = f"{str(id_announcement)}/images/{file_name}"
+                self.s3.upload_fileobj(
+                    uploaded_file.file,
+                    AWS_BUCKET_NAME,
+                    file_path,
+                )
+                return f"https://{AWS_BUCKET_NAME}.s3.us-east-1.amazonaws.com/{file_path}"
+            except ClientError as e:
+                raise AWSConfigException(detail=e.msg)
+
+    def save_multiple_files(
+        self, id_announcement: UUID, uploaded_files: List[UploadFile]
+    ) -> List[str]:
+        return [self.save_file(id_announcement, uploaded_file) for uploaded_file in uploaded_files]
+
+    def get_files(self, id_announcement: UUID) -> List:
+        if not self.get_by_id(id_announcement=id_announcement):
+            raise RecordNotFoundException()
+        bucket = self.__get_bucket_data()
+        response = []
+        if bucket:
+            for obj in bucket["Contents"]:
+                if obj["Key"].startswith(f"{str(id_announcement)}/images"):
+                    response.append(
+                        f"https://{AWS_BUCKET_NAME}.s3.us-east-1.amazonaws.com/{obj['Key']}"
+                    )
+        return response
+
+    def delete_file(self, id_announcement: UUID, file_name: str):
+        if not self.get_by_id(id_announcement=id_announcement):
+            raise RecordNotFoundException()
+        file_path = f"{str(id_announcement)}/images/{file_name}"
+        try:
+            self.s3.delete_object(Bucket=AWS_BUCKET_NAME, Key=file_path)
+        except ClientError as e:
+            raise AWSConfigException(detail=e.msg)
+
+    def __get_bucket_data(self) -> dict:
+        try:
+            response = self.s3.list_objects_v2(
+                Bucket=AWS_BUCKET_NAME,
+                EncodingType="url",
+                FetchOwner=True,
+                RequestPayer="requester",
+            )
+            return response
+        except ClientError as e:
+            raise AWSConfigException(detail=e.msg)
 
     def __calculate_announcement_score(self, announcement: AnnouncementView, filters: list):
         true_items = self.__extract_true_items(announcement)

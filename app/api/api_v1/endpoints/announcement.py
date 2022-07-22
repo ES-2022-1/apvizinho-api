@@ -1,7 +1,7 @@
 from typing import List
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 
 import app.api.deps as deps
 from app.announcement.schemas.announcement import (
@@ -12,7 +12,12 @@ from app.announcement.schemas.announcement import (
     AnnouncementView,
 )
 from app.announcement.services.announcement_service import AnnouncementService
-from app.common.exceptions import RecordNotFoundException, RecordNotFoundHTTPException
+from app.common.exceptions import (
+    AWSConfigException,
+    AWSConfigExceptionHTTPException,
+    RecordNotFoundException,
+    RecordNotFoundHTTPException,
+)
 
 router = APIRouter()
 
@@ -22,6 +27,7 @@ def create_announcement(
     announcement_create: AnnouncementCreateBodyPayload,
     service: AnnouncementService = Depends(deps.get_announcement_service),
 ):
+
     return service.create(create=announcement_create)
 
 
@@ -65,6 +71,45 @@ def list_announcements_by_filter(
     service: AnnouncementService = Depends(deps.get_announcement_service),
 ):
     return service.filter(announcement_filter)
+
+
+@router.post("/{id_announcement}/upload")
+def upload_announcement_images(
+    id_announcement: UUID,
+    files: List[UploadFile] = File(...),
+    service: AnnouncementService = Depends(deps.get_announcement_service),
+):
+    try:
+        return service.save_multiple_files(id_announcement=id_announcement, uploaded_files=files)
+    except RecordNotFoundException:
+        raise RecordNotFoundHTTPException(detail="Announcement not found")
+    except AWSConfigException as e:
+        raise AWSConfigExceptionHTTPException(detail=e.detail)
+
+
+@router.get("/{id_announcement}/images")
+def get_announcement_images(
+    id_announcement: UUID,
+    service: AnnouncementService = Depends(deps.get_announcement_service),
+):
+    try:
+        return service.get_files(id_announcement=id_announcement)
+    except RecordNotFoundException:
+        raise RecordNotFoundHTTPException(detail="Announcement not found")
+
+
+@router.delete("/{id_announcement}/images/{file_name}")
+def delete_announcement_image(
+    id_announcement: UUID,
+    file_name: str,
+    service: AnnouncementService = Depends(deps.get_announcement_service),
+):
+    try:
+        return service.delete_file(id_announcement=id_announcement, file_name=file_name)
+    except RecordNotFoundException:
+        raise RecordNotFoundHTTPException(detail="Announcement not found")
+    except AWSConfigException as e:
+        raise AWSConfigExceptionHTTPException(detail=e.detail)
 
 
 @router.patch("/{id_announcement}/disable", response_model=AnnouncementView)
