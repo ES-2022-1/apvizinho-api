@@ -19,7 +19,8 @@ from app.common.exceptions import (
     RecordNotFoundHTTPException,
 )
 
-router = APIRouter()
+PROTECTED = [Depends(deps.hass_access)]
+router = APIRouter(dependencies=PROTECTED)
 
 
 @router.post("/", response_model=AnnouncementView)

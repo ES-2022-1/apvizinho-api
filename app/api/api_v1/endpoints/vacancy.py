@@ -13,7 +13,8 @@ from app.announcement.schemas.vacancy import (
 from app.announcement.services.vacancy_service import VacancyService
 from app.common.exceptions import RecordNotFoundException, RecordNotFoundHTTPException
 
-router = APIRouter()
+PROTECTED = [Depends(deps.hass_access)]
+router = APIRouter(dependencies=PROTECTED)
 
 
 @router.post("/", response_model=VacancyView)

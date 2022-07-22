@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
+from uuid import UUID
 
 from jose import jwt
 from pydantic import ValidationError
 
 from app.auth.schemas.auth import SessionCreate, TokenPayload, Tokens
-from app.common.exceptions import AuthException, AuthExceptionHTTPException
+from app.common.exceptions import AuthException, AuthExceptionHTTPException, RecordNotFoundException
 from app.common.models.users import Users
 from app.common.utils.password import check_password
 from app.core.settings import JWT_REFRESH_SECRET_KEY, JWT_SECRET_KEY
@@ -34,7 +35,9 @@ class AuthService:
                     headers={"WWW-Authenticate": "Bearer"},
                 )
 
-        except (jwt.JWTError, ValidationError):
+            self.user_service.get_by_id(id_user=UUID(token_data.id_user))
+
+        except (jwt.JWTError, ValidationError, RecordNotFoundException):
             raise AuthExceptionHTTPException(
                 status_code=403,
                 detail="Could not validate credentials",

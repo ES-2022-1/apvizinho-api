@@ -4,7 +4,6 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 
 import app.api.deps as deps
-from app.auth.middleware.JWTBearer import JWTBearer
 from app.common.exceptions import RecordNotFoundException, RecordNotFoundHTTPException
 from app.user.exceptions import UserAlreadyReviewedException, UserAlreadyReviewedHTTPException
 from app.user.schemas import CommentView, ReviewView, UserCreate, UserUpdate, UserView
@@ -23,7 +22,7 @@ def create_user(user_create: UserCreate, service: UserService = Depends(deps.get
 @router.get(
     "/",
     response_model=List[UserView],
-    dependencies=[Depends(JWTBearer(auth_service=deps.get_auth_service()))],
+    dependencies=[Depends(deps.hass_access)],
 )
 def get_all_users(service: UserService = Depends(deps.get_user_service)):
     return service.get_all()
@@ -32,7 +31,7 @@ def get_all_users(service: UserService = Depends(deps.get_user_service)):
 @router.get(
     "/{id_user}",
     response_model=UserView,
-    dependencies=[Depends(JWTBearer(auth_service=deps.get_auth_service()))],
+    dependencies=[Depends(deps.hass_access)],
 )
 def get_users_by_id(
     id_user: UUID,
@@ -46,7 +45,7 @@ def get_users_by_id(
 
 @router.delete(
     "/{id_user}",
-    dependencies=[Depends(JWTBearer(auth_service=deps.get_auth_service()))],
+    dependencies=[Depends(deps.hass_access)],
 )
 def delete_user(id_user: UUID, service: UserService = Depends(deps.get_user_service)):
     try:
@@ -58,7 +57,7 @@ def delete_user(id_user: UUID, service: UserService = Depends(deps.get_user_serv
 @router.put(
     "/{id_user}",
     response_model=UserView,
-    dependencies=[Depends(JWTBearer(auth_service=deps.get_auth_service()))],
+    dependencies=[Depends(deps.hass_access)],
 )
 def update_user(
     user_update: UserUpdate,
@@ -71,7 +70,7 @@ def update_user(
 @router.post(
     "/{id_user}/review",
     response_model=ReviewView,
-    dependencies=[Depends(JWTBearer(auth_service=deps.get_auth_service()))],
+    dependencies=[Depends(deps.hass_access)],
 )
 def review_system(
     review_create: ReviewBodyPayload,
@@ -87,7 +86,7 @@ def review_system(
 @router.post(
     "/{id_user_commented}/{id_user_writer}/profileComment",
     response_model=CommentView,
-    dependencies=[Depends(JWTBearer(auth_service=deps.get_auth_service()))],
+    dependencies=[Depends(deps.hass_access)],
 )
 def comment_system(
     comment_create: CommentBodyPayload,
@@ -101,7 +100,7 @@ def comment_system(
 @router.get(
     "/{id_user}/profileComment",
     response_model=CommentView,
-    dependencies=[Depends(JWTBearer(auth_service=deps.get_auth_service()))],
+    dependencies=[Depends(deps.hass_access)],
 )
 def get_comment_in_profile(
     comment_create: CommentBodyPayload,
