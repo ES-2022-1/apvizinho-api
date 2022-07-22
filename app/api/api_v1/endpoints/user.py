@@ -69,3 +69,23 @@ def comment_system(
     return service.profile_comment(
         comment_body_payload=comment_create,
     )
+
+
+@router.get("/{id_user}/profileComment", response_model=CommentView)
+def get_comment_in_profile(
+    #  try:
+    #     return service.
+    comment_create: CommentBodyPayload,
+    service: UserService = Depends(deps.get_user_service),
+):
+    return service.profile_comment(
+        comment_body_payload=comment_create,
+    )
+
+
+# @router.get("/{id_user}", response_model=UserView)
+# def get_users_by_id(id_user: UUID, service: UserService = Depends(deps.get_user_service)):
+#    try:
+#        return service.get_by_id(id_user=id_user)
+#    except RecordNotFoundException:
+#        raise RecordNotFoundHTTPException(detail="User not found")
