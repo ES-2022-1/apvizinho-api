@@ -79,23 +79,6 @@ def test_update_user(user, session, user_client, field, expected_field):
     assert response.json()[field] == expected_field
 
 
-def test_create_user_second_user(user_client):
-    data = {
-        "firstname": "Todoroki",
-        "surname": "Shoto",
-        "email": "sato-todo@email.com.br",
-        "cellphone": "99999998999",
-        "document": "99994999999",
-        "birthdate": "2007-01-11",
-        "password": "SEGREDO!",
-    }
-
-    response = user_client.create(json.dumps(data))
-
-    assert response.status_code == 200
-    assert response.json()["firstname"] == "Todoroki"
-
-
 def test_comment(user, user2, session, user_client):
     session.add(user)
     session.add(user2)
