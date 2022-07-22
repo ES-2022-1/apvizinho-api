@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.announcement.services.address_service import AddressService
 from app.announcement.services.announcement_service import AnnouncementService
 from app.announcement.services.vacancy_service import VacancyService
+from app.auth.services.auth_service import AuthService
 from app.db.database import SessionLocal
 from app.user.services.comment_service import CommentService
 from app.user.services.review_service import ReviewService
@@ -54,3 +55,7 @@ def get_user_service(
     comment_service=Depends(get_comment_service),
 ):
     return UserService(db, review_service=review_service, comment_service=comment_service)
+
+
+def get_auth_service(user_service: UserService = Depends(get_user_service)):
+    return AuthService(user_service=user_service)

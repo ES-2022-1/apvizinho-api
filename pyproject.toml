@@ -20,6 +20,7 @@ pendulum = "^2.1.2"
 bcrypt = "^3.2.2"
 haversine = "^2.6.0"
 boto3 = "^1.24.32"
+python-jose = "^3.3.0"
 
 [tool.poetry.dev-dependencies]
 sqlacodegen = "^2.3.0"
