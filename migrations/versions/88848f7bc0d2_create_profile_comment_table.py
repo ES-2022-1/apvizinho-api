@@ -1,7 +1,7 @@
 """create_profile_comment_table
 
 Revision ID: 88848f7bc0d2
-Revises: 101e055f082a
+Revises: c79c8dd27d51
 Create Date: 2022-07-17 15:11:15.737005
 
 """
@@ -11,7 +11,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = "88848f7bc0d2"
-down_revision = "101e055f082a"
+down_revision = "c79c8dd27d51"
 branch_labels = None
 depends_on = None
 
