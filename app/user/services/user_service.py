@@ -1,8 +1,12 @@
+from typing import List
 from uuid import UUID
 
+from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
+from app.common.exceptions import RecordNotFoundException
 from app.common.models import Users
+from app.common.repositories.aws_repository import AWSRepository
 from app.common.services.base import BaseService
 from app.common.utils import password as password_utils
 from app.user.exceptions import UserAlreadyReviewedException
@@ -24,6 +28,7 @@ class UserService(BaseService[UserCreate, UserUpdate, UserView]):
 
         self.review_service = review_service
         self.commment_service = comment_service
+        self.aws_repository = AWSRepository(base_path="user")
 
     def create(self, create: UserCreate) -> UserView:
         user_create = UserCreateHashedPassword(
@@ -60,3 +65,23 @@ class UserService(BaseService[UserCreate, UserUpdate, UserView]):
 
         user = user_repository.get_user_by_email(email=email)
         return user
+
+    def save_file(self, id_user: UUID, uploaded_file: UploadFile) -> UserView:
+        if not (self.get_by_id(id_user=id_user)):
+            raise RecordNotFoundException()
+        profile_image_url = self.aws_repository.save_file(
+            id_obj=id_user, uploaded_file=uploaded_file
+        )
+        return self.update(id_user=id_user, update=UserUpdate(profile_image=profile_image_url))
+
+    def get_files(self, id_user: UUID) -> List[str]:
+        if not (self.get_by_id(id_user=id_user)):
+            raise RecordNotFoundException()
+
+        return self.aws_repository.get_files(id_obj=id_user)
+
+    def delete_file(self, id_user: UUID, file_name: str):
+        if not (self.get_by_id(id_user=id_user)):
+            raise RecordNotFoundException()
+
+        self.aws_repository.delete_file(id_obj=id_user, file_name=file_name)
