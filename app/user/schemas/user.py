@@ -20,7 +20,7 @@ class UserBase(BaseModel):
     cellphone: str = cellphone_field
     document: str = document_field
     birthdate: date
-    bio: str
+    bio: Optional[str]
 
 
 class UserCreate(UserBase):
