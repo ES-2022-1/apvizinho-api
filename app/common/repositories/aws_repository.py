@@ -32,7 +32,7 @@ class AWSRepository:
     def save_multiple_files(self, id_obj: UUID, uploaded_files: List[UploadFile]) -> List[str]:
         return [self.save_file(id_obj, uploaded_file) for uploaded_file in uploaded_files]
 
-    def get_files(self, id_obj: UUID) -> List:
+    def get_files(self, id_obj: UUID) -> List[str]:
         bucket = self.__get_bucket_data()
         response = []
         if bucket:

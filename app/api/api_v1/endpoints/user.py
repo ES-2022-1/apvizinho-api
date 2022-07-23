@@ -1,10 +1,15 @@
 from typing import List
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 
 import app.api.deps as deps
-from app.common.exceptions import RecordNotFoundException, RecordNotFoundHTTPException
+from app.common.exceptions import (
+    AWSConfigException,
+    AWSConfigExceptionHTTPException,
+    RecordNotFoundException,
+    RecordNotFoundHTTPException,
+)
 from app.user.exceptions import UserAlreadyReviewedException, UserAlreadyReviewedHTTPException
 from app.user.schemas import CommentView, ReviewView, UserCreate, UserUpdate, UserView
 from app.user.schemas.comment import CommentBodyPayload
@@ -109,3 +114,17 @@ def get_comment_in_profile(
     return service.profile_comment(
         comment_body_payload=comment_create,
     )
+
+
+@router.post("/{id_user}/upload")
+def upload_profile_image(
+    id_user: UUID,
+    file: UploadFile = File(...),
+    service: UserService = Depends(deps.get_user_service),
+):
+    try:
+        return service.save_file(id_user=id_user, uploaded_file=file)
+    except RecordNotFoundException:
+        raise RecordNotFoundHTTPException(detail="User not found")
+    except AWSConfigException as e:
+        raise AWSConfigExceptionHTTPException(detail=e.detail)
