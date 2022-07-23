@@ -65,6 +65,7 @@ class AuthService:
             id_user=str(user.id_user),
             email=user.email,
             name=f"{user.firstname} {user.surname}",
+            already_reviewed=user.already_reviewed,
         ).dict()
 
         encoded_jwt = jwt.encode(to_encode, self.JWT_SECRET_KEY, self.ALGORITHM)
@@ -80,6 +81,7 @@ class AuthService:
             id_user=str(user.id_user),
             email=user.email,
             name=f"{user.firstname} {user.surname}",
+            already_reviewed=user.already_reviewed,
         ).dict()
 
         encoded_jwt = jwt.encode(to_encode, self.JWT_REFRESH_SECRET_KEY, self.ALGORITHM)

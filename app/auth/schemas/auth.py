@@ -23,3 +23,4 @@ class TokenPayload(BaseModel):
     email: str = email_field
     id_user: str
     name: str
+    already_reviewed: bool
