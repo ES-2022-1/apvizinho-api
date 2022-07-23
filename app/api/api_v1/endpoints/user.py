@@ -116,7 +116,7 @@ def get_comment_in_profile(
     )
 
 
-@router.post("/{id_user}/upload")
+@router.post("/{id_user}/upload", response_model=UserView)
 def upload_profile_image(
     id_user: UUID,
     file: UploadFile = File(...),

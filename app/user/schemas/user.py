@@ -20,6 +20,7 @@ class UserBase(BaseModel):
     cellphone: str = cellphone_field
     document: str = document_field
     birthdate: date
+    bio: str
 
 
 class UserCreate(UserBase):
@@ -39,6 +40,8 @@ class UserView(BaseModel):
     birthdate: date
     document: str
     already_reviewed: bool
+    bio: Optional[str]
+    profile_image: Optional[str]
 
     class Config:
         orm_mode = True
@@ -52,3 +55,5 @@ class UserUpdate(BaseModel):
     birthdate: Optional[date]
     document: Optional[str] = document_field
     already_reviewed: Optional[bool]
+    bio: Optional[str]
+    profile_image: Optional[str]

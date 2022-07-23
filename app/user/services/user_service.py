@@ -66,10 +66,13 @@ class UserService(BaseService[UserCreate, UserUpdate, UserView]):
         user = user_repository.get_user_by_email(email=email)
         return user
 
-    def save_file(self, id_user: UUID, uploaded_file: UploadFile) -> str:
+    def save_file(self, id_user: UUID, uploaded_file: UploadFile) -> UserView:
         if not (self.get_by_id(id_user=id_user)):
             raise RecordNotFoundException()
-        return self.aws_repository.save_file(id_obj=id_user, uploaded_file=uploaded_file)
+        profile_image_url = self.aws_repository.save_file(
+            id_obj=id_user, uploaded_file=uploaded_file
+        )
+        return self.update(id_user=id_user, update=UserUpdate(profile_image=profile_image_url))
 
     def get_files(self, id_user: UUID) -> List[str]:
         if not (self.get_by_id(id_user=id_user)):
