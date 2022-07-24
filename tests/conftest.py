@@ -15,6 +15,7 @@ from app.main import app
 from tests.factories import (  # noqa: F401
     make_address,
     make_announcement,
+    make_comment,
     make_review,
     make_user,
     make_vacancy,

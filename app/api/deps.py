@@ -54,9 +54,8 @@ def get_comment_service(db: Session = Depends(get_db)):
 def get_user_service(
     db: Session = Depends(get_db),
     review_service=Depends(get_review_service),
-    comment_service=Depends(get_comment_service),
 ):
-    return UserService(db, review_service=review_service, comment_service=comment_service)
+    return UserService(db, review_service=review_service)
 
 
 def get_auth_service(user_service: UserService = Depends(get_user_service)):

@@ -98,6 +98,11 @@ class AnnouncementService(
 
         self.aws_repository.delete_file(id_obj=id_announcement, file_name=file_name)
 
+    def get_announcements_by_id_user(self, id_user: UUID) -> List[AnnouncementView]:
+        repository: AnnouncementRepository = self.repository
+
+        return repository.get_announcements_by_id_user(id_user=id_user)
+
     def __calculate_announcement_score(self, announcement: AnnouncementView, filters: list):
         true_items = self.__extract_true_items(announcement)
         matched, match_score = self.__get_matched_items(filters, true_items)

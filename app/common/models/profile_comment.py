@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Text, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 
 from app.common.models.table_model import TableModel
@@ -28,3 +29,6 @@ class Profile_Comment(Base, TableModel):
     )
     comment = Column(Text, nullable=False)
     UniqueConstraint("id_comment", "id_user_commented", "id_user_writer", name="comment_ak_01")
+
+    user_commented = relationship("Users", foreign_keys=id_user_commented, lazy="joined")
+    user_writer = relationship("Users", foreign_keys=id_user_writer, lazy="joined")

@@ -101,3 +101,15 @@ def make_review(make_user):
         return models.Review(id_review=uuid.uuid4(), user=user, **{**defaults, **overrides})
 
     return _make_review
+
+
+@pytest.fixture
+def make_comment(make_user):
+    defaults = dict(comment="string")
+
+    def _make_comment(user_commented=make_user(), user_writer=make_user(), **overrides):
+        return models.Profile_Comment(
+            user_commented=user_commented, user_writer=user_writer, **{**defaults, **overrides}
+        )
+
+    return _make_comment
