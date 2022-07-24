@@ -11,9 +11,10 @@ from app.common.exceptions import (
     RecordNotFoundHTTPException,
 )
 from app.user.exceptions import UserAlreadyReviewedException, UserAlreadyReviewedHTTPException
-from app.user.schemas import CommentView, ReviewView, UserCreate, UserUpdate, UserView
-from app.user.schemas.comment import CommentBodyPayload
+from app.user.schemas import ReviewView, UserCreate, UserUpdate, UserView
+from app.user.schemas.comment import CommentCreate, CommentView
 from app.user.schemas.review import ReviewBodyPayload
+from app.user.services.comment_service import CommentService
 from app.user.services.user_service import UserService
 
 router = APIRouter()
@@ -89,34 +90,10 @@ def review_system(
 
 
 @router.post(
-    "/{id_user_commented}/{id_user_writer}/profileComment",
-    response_model=CommentView,
+    "/{id_user}/upload",
+    response_model=UserView,
     dependencies=[Depends(deps.hass_access)],
 )
-def comment_system(
-    comment_create: CommentBodyPayload,
-    service: UserService = Depends(deps.get_user_service),
-):
-    return service.profile_comment(
-        comment_body_payload=comment_create,
-    )
-
-
-@router.get(
-    "/{id_user}/profileComment",
-    response_model=CommentView,
-    dependencies=[Depends(deps.hass_access)],
-)
-def get_comment_in_profile(
-    comment_create: CommentBodyPayload,
-    service: UserService = Depends(deps.get_user_service),
-):
-    return service.profile_comment(
-        comment_body_payload=comment_create,
-    )
-
-
-@router.post("/{id_user}/upload", response_model=UserView)
 def upload_profile_image(
     id_user: UUID,
     file: UploadFile = File(...),
@@ -128,3 +105,24 @@ def upload_profile_image(
         raise RecordNotFoundHTTPException(detail="User not found")
     except AWSConfigException as e:
         raise AWSConfigExceptionHTTPException(detail=e.detail)
+
+
+@router.post(
+    "/comment",
+    response_model=CommentView,
+    dependencies=[Depends(deps.hass_access)],
+)
+def comment(
+    comment_create: CommentCreate,
+    service: CommentService = Depends(deps.get_comment_service),
+):
+    return service.create(create=comment_create)
+
+
+@router.get(
+    "/{id_user}/comments",
+    response_model=List[CommentView],
+    dependencies=[Depends(deps.hass_access)],
+)
+def get_user_comments(id_user: UUID, service: CommentService = Depends(deps.get_comment_service)):
+    return service.get_comments_by_id_user(id_user=id_user)

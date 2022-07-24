@@ -1,3 +1,6 @@
+from typing import List
+from uuid import UUID
+
 from sqlalchemy.orm import Session
 
 from app.common.services.base import BaseService
@@ -12,3 +15,7 @@ class CommentService(BaseService[CommentCreate, CommentUpdate, CommentView]):
             repository=CommentRepository,
             db=db,
         )
+
+    def get_comments_by_id_user(self, id_user: UUID) -> List[CommentView]:
+        repository: CommentRepository = self.repository
+        return repository.get_comments_by_id_user_commented(id_user_commented=id_user)

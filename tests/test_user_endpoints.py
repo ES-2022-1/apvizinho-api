@@ -12,9 +12,9 @@ class UserClient(BaseClient):
     def review(self, id_user, data):
         return self.client.post(f"/{self.path}/{id_user}/review", data=data, headers=self.headers)
 
-    def comment(self, id_user_commented, id_user_writer, data):
+    def comment(self, data):
         return self.client.post(
-            f"/{self.path}/{id_user_commented}/{id_user_writer}/profileComment",
+            f"/{self.path}/comment",
             data=data,
             headers=self.headers,
         )
@@ -89,7 +89,7 @@ def test_comment(user, user2, session, user_client):
         "id_user_commented": user.id_user,
         "id_user_writer": user2.id_user,
     }
-    response = user_client.comment(user.id_user, user2.id_user, json.dumps(data))
+    response = user_client.comment(json.dumps(data))
     assert response.status_code == 200
     assert response.json()["comment"] == "não façam acordo ele é tiktoker"
 
