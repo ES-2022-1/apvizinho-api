@@ -25,10 +25,21 @@ class UserClient(BaseClient):
             headers=self.headers,
         )
 
+    def get_announcements_by_id_user(self, id_user):
+        return self.client.get(
+            f"/{self.path}/{id_user}/announcements",
+            headers=self.headers,
+        )
+
 
 @pytest.fixture
 def user_client(client):
     return UserClient(client)
+
+
+@pytest.fixture
+def announcement(make_announcement):
+    return make_announcement()
 
 
 @pytest.fixture
@@ -163,3 +174,15 @@ def test_get_comments_by_id_user_commented(comment, session, user_client):
 
     assert response.status_code == 200
     assert len(response.json()) == 1
+    assert (response.json())[0]["id_user_commented"] == str(comment.id_user_commented)
+
+
+def test_get_user_announcements(announcement, session, user_client):
+    session.add(announcement)
+    session.commit()
+
+    response = user_client.get_announcements_by_id_user(id_user=announcement.id_user)
+
+    assert response.status_code == 200
+    assert len(response.json()) == 1
+    assert (response.json())[0]["id_user"] == str(announcement.id_user)

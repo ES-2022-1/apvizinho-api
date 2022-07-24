@@ -4,6 +4,8 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, File, UploadFile
 
 import app.api.deps as deps
+from app.announcement.schemas.announcement import AnnouncementView
+from app.announcement.services.announcement_service import AnnouncementService
 from app.common.exceptions import (
     AWSConfigException,
     AWSConfigExceptionHTTPException,
@@ -126,3 +128,14 @@ def comment(
 )
 def get_user_comments(id_user: UUID, service: CommentService = Depends(deps.get_comment_service)):
     return service.get_comments_by_id_user(id_user=id_user)
+
+
+@router.get(
+    "/{id_user}/announcements",
+    response_model=List[AnnouncementView],
+    dependencies=[Depends(deps.hass_access)],
+)
+def get_announcements_by_id_user(
+    id_user: UUID, service: AnnouncementService = Depends(deps.get_announcement_service)
+):
+    return service.get_announcements_by_id_user(id_user=id_user)
