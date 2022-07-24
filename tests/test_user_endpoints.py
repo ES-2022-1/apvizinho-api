@@ -19,6 +19,12 @@ class UserClient(BaseClient):
             headers=self.headers,
         )
 
+    def get_comments_by_id_user_commented(self, id_user_commented):
+        return self.client.get(
+            f"/{self.path}/{id_user_commented}/comments",
+            headers=self.headers,
+        )
+
 
 @pytest.fixture
 def user_client(client):
@@ -28,6 +34,11 @@ def user_client(client):
 @pytest.fixture
 def user(make_user):
     return make_user()
+
+
+@pytest.fixture
+def comment(make_comment):
+    return make_comment()
 
 
 @pytest.fixture
@@ -79,21 +90,6 @@ def test_update_user(user, session, user_client, field, expected_field):
     assert response.json()[field] == expected_field
 
 
-def test_comment(user, user2, session, user_client):
-    session.add(user)
-    session.add(user2)
-    session.commit()
-
-    data = {
-        "comment": "não façam acordo ele é tiktoker",
-        "id_user_commented": user.id_user,
-        "id_user_writer": user2.id_user,
-    }
-    response = user_client.comment(json.dumps(data))
-    assert response.status_code == 200
-    assert response.json()["comment"] == "não façam acordo ele é tiktoker"
-
-
 def test_delete_user(user, session, user_client):
     session.add(user)
     session.commit()
@@ -140,3 +136,30 @@ def test_user_already_reviewed(make_user, session, user_client):
     response = user_client.review(user.id_user, json.dumps(data))
     assert response.status_code == 400
     assert response.json()["detail"] == "User Already Reviewd the system"
+
+
+def test_comment(user, user2, session, user_client):
+    session.add(user)
+    session.add(user2)
+    session.commit()
+
+    data = {
+        "comment": "não façam acordo ele é tiktoker",
+        "id_user_commented": user.id_user,
+        "id_user_writer": user2.id_user,
+    }
+    response = user_client.comment(json.dumps(data))
+    assert response.status_code == 200
+    assert response.json()["comment"] == "não façam acordo ele é tiktoker"
+
+
+def test_get_comments_by_id_user_commented(comment, session, user_client):
+    session.add(comment)
+    session.commit()
+
+    response = user_client.get_comments_by_id_user_commented(
+        id_user_commented=comment.id_user_commented
+    )
+
+    assert response.status_code == 200
+    assert len(response.json()) == 1
