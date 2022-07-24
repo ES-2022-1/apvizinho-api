@@ -7,6 +7,7 @@ from sqlalchemy import Column
 from sqlalchemy.orm import Query, Session
 from sqlalchemy.sql import update
 
+from app.common import models
 from app.common.exceptions import RecordNotFoundException
 
 T = TypeVar("T")
@@ -54,9 +55,10 @@ class BaseRepository(Generic[T, ID]):
     def default_query(self) -> Optional[BaseFinder]:
         return self.db.query(self.model_class).filter(self.model_class.deleted_at.is_(None))
 
-    # @property
-    # def comment_query(self) -> Optional[BaseFinder]:
-    # return self.db.query(self.model_class).filter(self.model_class.)
+    @property
+    def comment_query(self) -> Optional[BaseFinder]:
+        return self.db.query(self.model_class).filter(self.model_class.id_user_commented())
+
     @property
     def finder(self):
         return self._finder
@@ -80,8 +82,15 @@ class BaseRepository(Generic[T, ID]):
             raise RecordNotFoundException()
         return model
 
-    #    def get_comments_in_profile(self, **kwargs) -> T:
-    #        model = self.defult_query.filter(*self)
+    def get_comments_in_profile(self, id_user_commented: UUID):
+        return (
+            self.db.query(models.Profile_Comment)
+            .filter(
+                models.Profile_Comment.id_user_commented == id_user_commented,
+                models.Profile_Comment.deleted_at.is_(None),
+            )
+            .first()
+        )
 
     def add(self, create_schema: pydantic.BaseModel) -> T:
         created_model = self.model_class(**create_schema.dict())

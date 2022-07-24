@@ -8,3 +8,7 @@ class UserAlreadyReviewedException(Exception):
 class UserAlreadyReviewedHTTPException(HTTPException):
     def __init__(self, status_code=400, detail="User Already Reviewd the system") -> None:
         super().__init__(status_code, detail=detail)
+
+
+class NotFoundException(Exception):
+    """Erro retorno do model"""

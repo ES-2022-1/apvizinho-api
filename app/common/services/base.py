@@ -3,6 +3,7 @@ from typing import Generic, List, TypeVar
 from sqlalchemy.orm import Session
 
 from app.common.repositories.base import BaseRepository
+from app.user.exceptions import NotFoundException
 
 T = TypeVar("T")
 ID = TypeVar("ID")
@@ -24,7 +25,10 @@ class BaseService(Generic[CREATE, UPDATE, RETURN]):
         return self.repository.get_by_id(**kwargs)
 
     def get_comment_in_profile(self, **kwargs) -> RETURN:
-        return self.repository
+        model = self.repository.get_comments_in_profile(**kwargs)
+        if not model:
+            raise NotFoundException()
+        return model
 
     def get_all(self) -> List[RETURN]:
         return self.repository.get_all()

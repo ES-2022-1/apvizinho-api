@@ -108,12 +108,13 @@ def comment_system(
     dependencies=[Depends(deps.hass_access)],
 )
 def get_comment_in_profile(
-    comment_create: CommentBodyPayload,
+    id_user: UUID,
     service: UserService = Depends(deps.get_user_service),
 ):
-    return service.profile_comment(
-        comment_body_payload=comment_create,
-    )
+    try:
+        return service.get_comment_in_profile(id_user_commented=id_user)
+    except RecordNotFoundException:
+        raise RecordNotFoundHTTPException(detail="User not found")
 
 
 @router.post("/{id_user}/upload", response_model=UserView)
