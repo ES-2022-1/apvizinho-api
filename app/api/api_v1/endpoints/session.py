@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 import app.api.deps as deps
-from app.auth.schemas.auth import SessionCreate, Tokens
+from app.auth.schemas.auth import AuthResponse, SessionCreate
 from app.auth.services.auth_service import AuthService
 from app.common.exceptions import (
     AuthException,
@@ -13,7 +13,7 @@ from app.common.exceptions import (
 router = APIRouter()
 
 
-@router.post("/", response_model=Tokens)
+@router.post("/", response_model=AuthResponse)
 def session(session_create: SessionCreate, service: AuthService = Depends(deps.get_auth_service)):
     try:
         return service.create_tokens(session_create=session_create)

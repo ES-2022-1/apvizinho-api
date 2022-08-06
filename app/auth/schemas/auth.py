@@ -2,6 +2,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
+from app.user.schemas.user import UserView
+
 email_field = Field(
     regex="([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+([A-Z|a-z]{2,})+"
 )  # noqa: W605
@@ -12,9 +14,10 @@ class SessionCreate(BaseModel):
     password: str
 
 
-class Tokens(BaseModel):
+class AuthResponse(BaseModel):
     access_token: str
     refresh_token: str
+    user: UserView
 
 
 class TokenPayload(BaseModel):

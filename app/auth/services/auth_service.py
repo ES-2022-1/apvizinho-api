@@ -4,7 +4,7 @@ from uuid import UUID
 from jose import jwt
 from pydantic import ValidationError
 
-from app.auth.schemas.auth import SessionCreate, TokenPayload, Tokens
+from app.auth.schemas.auth import AuthResponse, SessionCreate, TokenPayload
 from app.common.exceptions import AuthException, AuthExceptionHTTPException, RecordNotFoundException
 from app.common.models.users import Users
 from app.common.utils.password import check_password
@@ -45,15 +45,16 @@ class AuthService:
 
         return True
 
-    def create_tokens(self, session_create: SessionCreate) -> Tokens:
+    def create_tokens(self, session_create: SessionCreate) -> AuthResponse:
         user: Users = self.user_service.get_user_by_email(session_create.email)
 
         if not (check_password(session_create.password, user.password_hash)):
             raise AuthException(detail="Wrong password")
 
-        return Tokens(
+        return AuthResponse(
             access_token=self.create_access_token(user=user),
             refresh_token=self.create_refresh_token(user=user),
+            user=user,
         )
 
     def create_access_token(self, user: Users) -> str:
