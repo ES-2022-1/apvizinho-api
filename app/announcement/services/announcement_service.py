@@ -39,6 +39,21 @@ class AnnouncementService(
         self.address_service = address_service
         self.aws_repository = AWSRepository(base_path="announcement")
 
+    def get_by_id(self, **kwargs) -> AnnouncementView:
+        announcement = super().get_by_id(**kwargs)
+
+        announcement.images_url = self.get_files(id_announcement=announcement.id_announcement)
+
+        return announcement
+
+    def get_all(self) -> List[AnnouncementView]:
+        annoucements = super().get_all()
+
+        for announcement in annoucements:
+            announcement.images_url = self.get_files(id_announcement=announcement.id_announcement)
+
+        return annoucements
+
     def create(self, create: AnnouncementCreateBodyPayload) -> AnnouncementView:
         address = self.address_service.create(create.address)
 
@@ -87,9 +102,6 @@ class AnnouncementService(
         )
 
     def get_files(self, id_announcement: UUID) -> List:
-        if not (self.get_by_id(id_announcement=id_announcement)):
-            raise RecordNotFoundException()
-
         return self.aws_repository.get_files(id_obj=id_announcement)
 
     def delete_file(self, id_announcement: UUID, file_name: str):
