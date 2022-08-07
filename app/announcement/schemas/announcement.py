@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from app.announcement.schemas.address import AddressCreate, AddressView
 from app.announcement.schemas.vacancy import VacancyBase, VacancyView
+from app.user.schemas.user import UserView
 
 
 class AnnouncementStatus(str, Enum):
@@ -68,6 +69,7 @@ class AnnouncementView(AnnouncementBase):
     address: AddressView
     images_url: Optional[List[str]] = None
     status: AnnouncementStatus
+    user: UserView
 
     class Config:
         orm_mode = True
