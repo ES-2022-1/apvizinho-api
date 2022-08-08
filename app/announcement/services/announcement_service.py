@@ -113,7 +113,12 @@ class AnnouncementService(
     def get_announcements_by_id_user(self, id_user: UUID) -> List[AnnouncementView]:
         repository: AnnouncementRepository = self.repository
 
-        return repository.get_announcements_by_id_user(id_user=id_user)
+        annoucements = repository.get_announcements_by_id_user(id_user=id_user)
+
+        for announcement in annoucements:
+            announcement.images_url = self.get_files(id_announcement=announcement.id_announcement)
+
+        return annoucements
 
     def __calculate_announcement_score(self, announcement: AnnouncementView, filters: list):
         true_items = self.__extract_true_items(announcement)
