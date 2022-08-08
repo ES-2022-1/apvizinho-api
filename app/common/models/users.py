@@ -18,7 +18,7 @@ class Users(Base, TableModel):
         nullable=False,
     )
 
-    email = Column(String(50), nullable=False)
+    email = Column(String(50), nullable=False, unique=True)
     firstname = Column(String(50), nullable=False)
     surname = Column(String(50), nullable=False)
     password_hash = Column(String(100), nullable=False)
